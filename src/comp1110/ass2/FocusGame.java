@@ -109,4 +109,14 @@ public class FocusGame {
         // FIXME Task 9: determine the solution to the game, given a particular challenge
         return null;
     }
+
+    /**
+     * An idea from ass1 and coded by Ziyue Wang.
+     * Because we defined x for col and y for row,
+     * the array should be 9*5 including 2 invalid blocks.
+     * 04 & 84 should be null in the game.
+     */
+    public State[][] boardStates = new State[9][5];
+
+
 }
