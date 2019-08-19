@@ -8,7 +8,7 @@ Use the entries below as an example.
 Everyone: create application skeleton - meeting 16:00 17 Aug  
 Ziyue Wang: the first version - 19 Aug  
 Zeming Wang: optimise based on the previous version - 20 Aug  
-Pinxu Pan: write Javadoc - 20 Aug  
+Pinxu Pan: And some useful methods and write Javadoc - 20 Aug  
 
 ## Week 5
 
