@@ -9,6 +9,71 @@ import java.util.Set;
  * (https://www.smartgames.eu/uk/one-player-games/iq-focus)
  */
 public class FocusGame {
+    /**
+     * An idea from ass1 and coded by Ziyue Wang and modified by Zeming Wang
+     * Because we defined x for col and y for row,
+     * the array should be 9*5 including 2 invalid blocks.
+     * 4,0 & 4,8 should be null in the game.
+     */
+    private State[][] boardStates = new State[5][9];
+
+    /**
+     * record whether the tiles has been used
+     */private boolean[] tileUsed = {false, false, false, false, false, false, false, false, false, false};
+
+    /**
+     * constructor
+     */
+    public FocusGame() {
+        //add code here
+    }
+
+    /**
+     * check if a tile has been put on the board
+     * @param tile the tile you want to check
+     * @return if the tile has been put on the board
+     */
+    static boolean isTileUsed(Tile tile){
+        // add code here
+        return false;
+    }
+
+    /**
+     * Update the tile data structure with a new tile placement.
+     * @param tile The tile being placed
+     */
+    private void updateTiles(Tile tile) {
+        // add code here
+    }
+
+    /**
+     * Update the boardstates data structure due to a valid (correct) new
+     * tile placement.
+     * @param tile The tile being placed
+     */
+    private void updateBoardStates(Tile tile){
+        // add code here
+    }
+
+    /**
+     * Add a new tile placement to the board state, updating
+     * all relevant data structures.
+     * @param placement The placement to add.
+     */
+    private void addTileToBoard(String placement) {
+        // add code here
+    }
+
+    /**
+     * Given a location, return its current state.
+     * @param location  A location on the game board.
+     * @return          An object of type `enum State`, representing the given location.
+     */
+    public State getLocationState(Location location) {
+        int x = location.getX();
+        int y = location.getY();
+        return boardStates[x][y];
+    }
 
     /**
      * Determine whether a piece placement is well-formed according to the
@@ -109,14 +174,5 @@ public class FocusGame {
         // FIXME Task 9: determine the solution to the game, given a particular challenge
         return null;
     }
-
-    /**
-     * An idea from ass1 and coded by Ziyue Wang.
-     * Because we defined x for col and y for row,
-     * the array should be 9*5 including 2 invalid blocks.
-     * 04 & 84 should be null in the game.
-     */
-    public State[][] boardStates = new State[9][5];
-
 
 }

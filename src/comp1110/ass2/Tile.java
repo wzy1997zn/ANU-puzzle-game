@@ -1,7 +1,7 @@
 package comp1110.ass2;
 
 /**
- * An idea from ass1 and coded by Ziyue Wang.
+ * An idea from ass1 and coded by Ziyue Wang and modified by Zeming Wang.
  * It should be very similar with the Tile in ass1.
  * But I would like to add a method to let the Tile
  * has the ability to calculate or just hard coded
@@ -78,5 +78,29 @@ public class Tile {
     public static TileType placementToTileType(String placement) {
         // FIXME
         return null;
+    }
+
+    /**
+     * Given a location, return its current state.
+     * @param tileType the type of the tile
+     * @param location  A location on the game board.
+     * @param orientation the orientation of the tile
+     * @return          A string represents which board squares it would occupy and what are those locations' colors.
+     */
+    public static String getTileInfoAtLocation(TileType tileType, Location location, Orientation orientation){
+        // CODE
+        return null;
+    }
+
+    public String getTileInfoLocation(Location location, Orientation orientation){
+        return getTileInfoAtLocation(this.tileType, location, orientation);
+    }
+
+    public String getTileInfoLocation(Orientation orientation){
+        return getTileInfoAtLocation(this.tileType, this.location, orientation);
+    }
+
+    public String getTileInfoLocation(){
+        return getTileInfoAtLocation(this.tileType, this.location, this.orientation);
     }
 }
