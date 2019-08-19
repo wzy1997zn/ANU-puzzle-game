@@ -11,7 +11,7 @@ import java.util.Set;
 public class FocusGame {
     /**
      * An idea from ass1 and coded by Ziyue Wang and modified by Zeming Wang
-     * Because we defined x for col and y for row,
+     * Because we defined y for col and x for row,
      * the array should be 9*5 including 2 invalid blocks.
      * 4,0 & 4,8 should be null in the game.
      */

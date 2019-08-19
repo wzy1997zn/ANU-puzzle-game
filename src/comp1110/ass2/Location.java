@@ -20,26 +20,42 @@ public class Location {
 
     /**
      * the constructor
-     * @param X
-     * @param Y
+     * @param X row of this location
+     * @param Y column of this location
      */
     public Location(int X, int Y) {
         this.X = X;
         this.Y = Y;
     }
 
+    /**
+     * change the row
+     * @param x row of this location
+     */
     public void setX(int x) {
         X = x;
     }
 
+    /**
+     * change the column
+     * @param y row of this location
+     */
     public void setY(int y) {
         Y = y;
     }
 
+    /**
+     * get the row
+     * @return  row of this location
+     */
     public int getX() {
         return X;
     }
 
+    /**
+     * change the column
+     * @return column of this location
+     */
     public int getY() {
         return Y;
     }
