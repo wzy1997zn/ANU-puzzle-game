@@ -9,11 +9,11 @@ declaration: >-
 # members).  
 contributions:
   - uid: u6891105
-    contribution: Build project structure
+    contribution: 40
   - uid: u6892792
-    contribution: Modify and optimize the structure on the previous version
+    contribution: 40
   - uid: u6969758
-    contribution: Write Javadoc
+    contribution: 30
 
 # Sign *your* name and uids here. (Remove entries if you have fewer
 # than three members)
