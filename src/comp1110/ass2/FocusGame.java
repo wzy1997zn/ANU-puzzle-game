@@ -1,6 +1,7 @@
 package comp1110.ass2;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This class provides the text interface for the IQ Focus Game
@@ -89,7 +90,10 @@ public class FocusGame {
      */
     static boolean isPiecePlacementWellFormed(String piecePlacement) {
         // FIXME Task 2: determine whether a piece placement is well-formed
-        return false;
+        if(piecePlacement.length() != 4)
+            return false;
+        String reg = "[a-j][0-8][0-4][0-3]";
+        return piecePlacement.matches(reg);
     }
 
     /**
@@ -103,7 +107,26 @@ public class FocusGame {
      */
     public static boolean isPlacementStringWellFormed(String placement) {
         // FIXME Task 3: determine whether a placement is well-formed
-        return false;
+        boolean[] flag = new boolean[10];
+        for(int i = 0; i < 10; i++)
+            flag[i] = true;
+        int len = placement.length();
+        if(len == 0)
+            return false;
+        if(len%4 != 0)
+            return false;
+        else {
+            for(int i = 0; i < len; i+=4){
+                if(isPiecePlacementWellFormed(placement.substring(i,i+4)) == false)
+                    return false;
+                int n = placement.charAt(i)-'a';
+                if(flag[n])
+                    flag[n] = false;
+                else
+                    return false;
+            }
+        }
+        return true;
     }
 
     /**
