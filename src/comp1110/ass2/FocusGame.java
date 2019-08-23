@@ -1,5 +1,8 @@
 package comp1110.ass2;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -16,7 +19,7 @@ public class FocusGame {
      * the array should be 9*5 including 2 invalid blocks.
      * 4,0 & 4,8 should be null in the game.
      */
-    private State[][] boardStates = new State[5][9];
+    public State[][] boardStates = new State[5][9];
 
     /**
      * record whether the tiles has been used
@@ -30,13 +33,17 @@ public class FocusGame {
     }
 
     /**
+     * Modified by Ziyue Wang, need to use tileUsed, so remove static
      * check if a tile has been put on the board
      * @param tile the tile you want to check
      * @return if the tile has been put on the board
      */
-    static boolean isTileUsed(Tile tile){
+    private boolean isTileUsed(Tile tile){
         // add code here
-        return false;
+        TileType type = tile.getTileType();
+        int typeIndex = type.getIndex();
+
+        return tileUsed[typeIndex];
     }
 
     /**
@@ -44,7 +51,9 @@ public class FocusGame {
      * @param tile The tile being placed
      */
     private void updateTiles(Tile tile) {
-        // add code here
+        // implemented by Ziyue
+        int typeIndex = tile.getTileType().getIndex();
+        tileUsed[typeIndex] = true;
     }
 
     /**
@@ -53,7 +62,14 @@ public class FocusGame {
      * @param tile The tile being placed
      */
     private void updateBoardStates(Tile tile){
-        // add code here
+        // implemented by Ziyue
+        HashMap<Location, State> tileInfo = tile.getTileInfoLocation();
+        for (Map.Entry<Location, State> info: tileInfo.entrySet()) {
+            Location loc = info.getKey();
+            State state = info.getValue();
+            boardStates[loc.getX()][loc.getY()] = state;
+        }
+
     }
 
     /**
@@ -62,7 +78,11 @@ public class FocusGame {
      * @param placement The placement to add.
      */
     private void addTileToBoard(String placement) {
-        // add code here
+        // implemented by Ziyue
+        Tile tile = new Tile(placement);
+
+        updateBoardStates(tile);
+        updateTiles(tile);
     }
 
     /**
@@ -144,6 +164,12 @@ public class FocusGame {
      */
     public static boolean isPlacementStringValid(String placement) {
         // FIXME Task 5: determine whether a placement string is valid
+        if (!isPlacementStringWellFormed(placement)) {
+            return false;
+        }
+        // Ziyue TODO haven't finish
+
+        Tile testingTile = new Tile(placement);
         return false;
     }
 
