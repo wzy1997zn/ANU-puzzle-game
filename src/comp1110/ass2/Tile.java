@@ -48,6 +48,7 @@ public class Tile {
      * @param placement
      */
     public Tile(String placement) {
+        placement = placement.toLowerCase();
         this.tileType = placementToTileType(placement);
         this.location = placementToLocation(placement);
         this.orientation = placementToOrientation(placement);
@@ -67,17 +68,75 @@ public class Tile {
     // util methods
     public static Orientation placementToOrientation(String placement) {
         // FIXME
-        return null;
+        Orientation ori = null;
+        int orientationIndex = placement.charAt(3)-'0';
+        switch (orientationIndex) {
+            case 0:
+                ori = Orientation.NORTH;
+                break;
+            case 1:
+                ori = Orientation.EAST;
+                break;
+            case 2:
+                ori = Orientation.SOUTH;
+                break;
+            case 3:
+                ori = Orientation.WEST;
+                break;
+            default:
+                System.out.println("SHOULD NOT REACH HERE");
+                break;
+        }
+        return ori;
     }
 
     public static Location placementToLocation(String placement) {
-        // FIXME
-        return null;
+        // Attention, in placement x,y refers to (col,row); in location x,y refers to (row col)
+        int col = placement.charAt(1) - '0';
+        int row = placement.charAt(2) - '0';
+        return new Location(row,col);
     }
 
     public static TileType placementToTileType(String placement) {
-        // FIXME
-        return null;
+
+        int typeIndex = placement.charAt(0)-'a';
+        TileType type = null;
+        switch (typeIndex){
+            case 0:
+                type = TileType.A;
+                break;
+            case 1:
+                type = TileType.B;
+                break;
+            case 2:
+                type = TileType.C;
+                break;
+            case 3:
+                type = TileType.D;
+                break;
+            case 4:
+                type = TileType.E;
+                break;
+            case 5:
+                type = TileType.F;
+                break;
+            case 6:
+                type = TileType.G;
+                break;
+            case 7:
+                type = TileType.H;
+                break;
+            case 8:
+                type = TileType.I;
+                break;
+            case 9:
+                type = TileType.J;
+                break;
+            default:
+                System.out.println("SHOULD NOT REACH HERE");
+                break;
+        }
+        return type;
     }
 
     /**
