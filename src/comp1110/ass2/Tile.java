@@ -86,6 +86,7 @@ public class Tile {
      * @param location  A location on the game board.
      * @param orientation the orientation of the tile
      * @return          A string represents which board squares it would occupy and what are those locations' colors.
+     *                  for example,tileType is a, location is 1,1, orientation is NORTH(0), then return a String 11G12W13R22R
      */
     public static String getTileInfoAtLocation(TileType tileType, Location location, Orientation orientation){
         // CODE
