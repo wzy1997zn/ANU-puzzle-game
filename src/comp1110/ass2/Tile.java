@@ -1,5 +1,7 @@
 package comp1110.ass2;
 
+import java.util.HashMap;
+
 /**
  * An idea from ass1 and coded by Ziyue Wang and modified by Zeming Wang.
  * It should be very similar with the Tile in ass1.
@@ -145,21 +147,43 @@ public class Tile {
      * @param location  A location on the game board.
      * @param orientation the orientation of the tile
      * @return          A string represents which board squares it would occupy and what are those locations' colors.
+     * MODIFIED by Ziyue Wang
+     * Maybe Hashmap<Location, State> could be a better data structure to pass data
      */
-    public static String getTileInfoAtLocation(TileType tileType, Location location, Orientation orientation){
+    public static HashMap<Location, State> getTileInfoAtLocation(TileType tileType, Location location, Orientation orientation){
         // CODE
-        return null;
+        HashMap<Location, State> tileInfo = new HashMap<>();
+
+        State[][] originStates = TileType.originStates[tileType.getIndex()-1];
+        State[][] rotatedStates = originStates;
+
+        for (int i = 0; i < orientation.getIndex(); i++) {
+            rotatedStates = TileType.rotate90_2DStateArray(rotatedStates);
+        }
+
+        int row_origin = location.getX();
+        int col_origin = location.getY();
+
+        for (int i = 0; i < rotatedStates.length; i++) {
+            for (int j = 0; j < rotatedStates[0].length; j++) {
+                if (rotatedStates[i][j] != null) {
+                    tileInfo.put(new Location(row_origin + i, col_origin + j), rotatedStates[i][j]);
+                }
+            }
+        }
+
+        return tileInfo;
     }
 
-    public String getTileInfoLocation(Location location, Orientation orientation){
+    public HashMap<Location, State> getTileInfoLocation(Location location, Orientation orientation){
         return getTileInfoAtLocation(this.tileType, location, orientation);
     }
 
-    public String getTileInfoLocation(Orientation orientation){
+    public HashMap<Location, State> getTileInfoLocation(Orientation orientation){
         return getTileInfoAtLocation(this.tileType, this.location, orientation);
     }
 
-    public String getTileInfoLocation(){
+    public HashMap<Location, State> getTileInfoLocation(){
         return getTileInfoAtLocation(this.tileType, this.location, this.orientation);
     }
 }
