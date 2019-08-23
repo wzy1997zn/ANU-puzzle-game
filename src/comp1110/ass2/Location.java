@@ -63,12 +63,21 @@ public class Location {
     /**
      * An idea from Ziyue Wang.
      * It should be a method for judging whether 2 Location is the same.
-     * FIXME
      * @param obj
      * @return
      */
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (obj instanceof Location) {
+            Location other = (Location) obj;
+            if (this.getX() == other.getX() && this.getY() == other.getY()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return super.equals(obj);
+        }
+
     }
 }
