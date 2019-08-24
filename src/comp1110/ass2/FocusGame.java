@@ -1,7 +1,6 @@
 package comp1110.ass2;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -53,7 +52,7 @@ public class FocusGame {
     private void updateTiles(Tile tile) {
         // implemented by Ziyue
         int typeIndex = tile.getTileType().getIndex();
-        tileUsed[typeIndex] = true;
+        tileUsed[typeIndex-1] = true;
     }
 
     /**
@@ -169,8 +168,33 @@ public class FocusGame {
         }
         // Ziyue TODO haven't finish
 
-        Tile testingTile = new Tile(placement);
-        return false;
+        // use a virtual board to test all the stuff
+        // use addTileToBoard method to change states for next check
+        FocusGame testingBoard = new FocusGame();
+
+        for (int i = 0; i < placement.length(); i+=4) {
+            String testingPlacement = placement.substring(i,i+4);
+            Tile testingTile = new Tile(testingPlacement);
+            HashMap<Location,State> testingInfo = testingTile.getTileInfoLocation();
+
+            for (Map.Entry<Location, State> info: testingInfo.entrySet()) {
+                Location loc = info.getKey();
+                State state = info.getValue();
+
+                // pieces must be entirely on the board
+                if (!loc.isValid()) {
+                    return false;
+                }
+                // pieces must not overlap each other
+                if (testingBoard.boardStates[loc.getX()][loc.getY()] != null) {
+                    return false;
+                }
+            }
+            // adding current tile to testing board
+            testingBoard.addTileToBoard(testingPlacement);
+
+        }
+        return true;
     }
 
     /**

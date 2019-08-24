@@ -80,4 +80,21 @@ public class Location {
         }
 
     }
+
+    /**
+     * judging whether the location is on board
+     * @return location valid or not
+     */
+    public boolean isValid() {
+        if (getX() < 0 || getX() > 4) {
+            return false;
+        }
+        if (getY() < 0 || getY() > 8) {
+            return false;
+        }
+        if (getX() == 4 && (getY() == 0 || getY() == 8)) {
+            return false;
+        }
+        return true;
+    }
 }
