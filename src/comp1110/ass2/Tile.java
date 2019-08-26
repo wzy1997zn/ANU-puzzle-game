@@ -1,5 +1,7 @@
 package comp1110.ass2;
 
+import java.util.HashMap;
+
 /**
  * An idea from ass1 and coded by Ziyue Wang and modified by Zeming Wang.
  * It should be very similar with the Tile in ass1.
@@ -48,6 +50,7 @@ public class Tile {
      * @param placement
      */
     public Tile(String placement) {
+        placement = placement.toLowerCase();
         this.tileType = placementToTileType(placement);
         this.location = placementToLocation(placement);
         this.orientation = placementToOrientation(placement);
@@ -67,17 +70,75 @@ public class Tile {
     // util methods
     public static Orientation placementToOrientation(String placement) {
         // FIXME
-        return null;
+        Orientation ori = null;
+        int orientationIndex = placement.charAt(3)-'0';
+        switch (orientationIndex) {
+            case 0:
+                ori = Orientation.NORTH;
+                break;
+            case 1:
+                ori = Orientation.EAST;
+                break;
+            case 2:
+                ori = Orientation.SOUTH;
+                break;
+            case 3:
+                ori = Orientation.WEST;
+                break;
+            default:
+                System.out.println("SHOULD NOT REACH HERE");
+                break;
+        }
+        return ori;
     }
 
     public static Location placementToLocation(String placement) {
-        // FIXME
-        return null;
+        // Attention, in placement x,y refers to (col,row); in location x,y refers to (row col)
+        int col = placement.charAt(1) - '0';
+        int row = placement.charAt(2) - '0';
+        return new Location(row,col);
     }
 
     public static TileType placementToTileType(String placement) {
-        // FIXME
-        return null;
+
+        int typeIndex = placement.charAt(0)-'a';
+        TileType type = null;
+        switch (typeIndex){
+            case 0:
+                type = TileType.A;
+                break;
+            case 1:
+                type = TileType.B;
+                break;
+            case 2:
+                type = TileType.C;
+                break;
+            case 3:
+                type = TileType.D;
+                break;
+            case 4:
+                type = TileType.E;
+                break;
+            case 5:
+                type = TileType.F;
+                break;
+            case 6:
+                type = TileType.G;
+                break;
+            case 7:
+                type = TileType.H;
+                break;
+            case 8:
+                type = TileType.I;
+                break;
+            case 9:
+                type = TileType.J;
+                break;
+            default:
+                System.out.println("SHOULD NOT REACH HERE");
+                break;
+        }
+        return type;
     }
 
     /**
@@ -86,21 +147,43 @@ public class Tile {
      * @param location  A location on the game board.
      * @param orientation the orientation of the tile
      * @return          A string represents which board squares it would occupy and what are those locations' colors.
+     * MODIFIED by Ziyue Wang
+     * Maybe Hashmap<Location, State> could be a better data structure to pass data
      */
-    public static String getTileInfoAtLocation(TileType tileType, Location location, Orientation orientation){
+    public static HashMap<Location, State> getTileInfoAtLocation(TileType tileType, Location location, Orientation orientation){
         // CODE
-        return null;
+        HashMap<Location, State> tileInfo = new HashMap<>();
+
+        State[][] originStates = TileType.originStates[tileType.getIndex()-1];
+        State[][] rotatedStates = originStates;
+
+        for (int i = 0; i < orientation.getIndex(); i++) {
+            rotatedStates = TileType.rotate90_2DStateArray(rotatedStates);
+        }
+
+        int row_origin = location.getX();
+        int col_origin = location.getY();
+
+        for (int i = 0; i < rotatedStates.length; i++) {
+            for (int j = 0; j < rotatedStates[0].length; j++) {
+                if (rotatedStates[i][j] != null) {
+                    tileInfo.put(new Location(row_origin + i, col_origin + j), rotatedStates[i][j]);
+                }
+            }
+        }
+
+        return tileInfo;
     }
 
-    public String getTileInfoLocation(Location location, Orientation orientation){
+    public HashMap<Location, State> getTileInfoLocation(Location location, Orientation orientation){
         return getTileInfoAtLocation(this.tileType, location, orientation);
     }
 
-    public String getTileInfoLocation(Orientation orientation){
+    public HashMap<Location, State> getTileInfoLocation(Orientation orientation){
         return getTileInfoAtLocation(this.tileType, this.location, orientation);
     }
 
-    public String getTileInfoLocation(){
+    public HashMap<Location, State> getTileInfoLocation(){
         return getTileInfoAtLocation(this.tileType, this.location, this.orientation);
     }
 }

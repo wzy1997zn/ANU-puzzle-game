@@ -1,6 +1,9 @@
 package comp1110.ass2;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This class provides the text interface for the IQ Focus Game
@@ -15,7 +18,7 @@ public class FocusGame {
      * the array should be 9*5 including 2 invalid blocks.
      * 4,0 & 4,8 should be null in the game.
      */
-    private State[][] boardStates = new State[5][9];
+    public State[][] boardStates = new State[5][9];
 
     /**
      * record whether the tiles has been used
@@ -29,13 +32,17 @@ public class FocusGame {
     }
 
     /**
+     * Modified by Ziyue Wang, need to use tileUsed, so remove static
      * check if a tile has been put on the board
      * @param tile the tile you want to check
      * @return if the tile has been put on the board
      */
-    static boolean isTileUsed(Tile tile){
+    private boolean isTileUsed(Tile tile){
         // add code here
-        return false;
+        TileType type = tile.getTileType();
+        int typeIndex = type.getIndex();
+
+        return tileUsed[typeIndex];
     }
 
     /**
@@ -43,7 +50,9 @@ public class FocusGame {
      * @param tile The tile being placed
      */
     private void updateTiles(Tile tile) {
-        // add code here
+        // implemented by Ziyue
+        int typeIndex = tile.getTileType().getIndex();
+        tileUsed[typeIndex-1] = true;
     }
 
     /**
@@ -52,7 +61,14 @@ public class FocusGame {
      * @param tile The tile being placed
      */
     private void updateBoardStates(Tile tile){
-        // add code here
+        // implemented by Ziyue
+        HashMap<Location, State> tileInfo = tile.getTileInfoLocation();
+        for (Map.Entry<Location, State> info: tileInfo.entrySet()) {
+            Location loc = info.getKey();
+            State state = info.getValue();
+            boardStates[loc.getX()][loc.getY()] = state;
+        }
+
     }
 
     /**
@@ -61,7 +77,11 @@ public class FocusGame {
      * @param placement The placement to add.
      */
     private void addTileToBoard(String placement) {
-        // add code here
+        // implemented by Ziyue
+        Tile tile = new Tile(placement);
+
+        updateBoardStates(tile);
+        updateTiles(tile);
     }
 
     /**
@@ -89,7 +109,10 @@ public class FocusGame {
      */
     static boolean isPiecePlacementWellFormed(String piecePlacement) {
         // FIXME Task 2: determine whether a piece placement is well-formed
-        return false;
+        if(piecePlacement.length() != 4)
+            return false;
+        String reg = "[a-j][0-8][0-4][0-3]";
+        return piecePlacement.matches(reg);
     }
 
     /**
@@ -103,7 +126,26 @@ public class FocusGame {
      */
     public static boolean isPlacementStringWellFormed(String placement) {
         // FIXME Task 3: determine whether a placement is well-formed
-        return false;
+        boolean[] flag = new boolean[10];
+        for(int i = 0; i < 10; i++)
+            flag[i] = true;
+        int len = placement.length();
+        if(len == 0)
+            return false;
+        if(len%4 != 0)
+            return false;
+        else {
+            for(int i = 0; i < len; i+=4){
+                if(isPiecePlacementWellFormed(placement.substring(i,i+4)) == false)
+                    return false;
+                int n = placement.charAt(i)-'a';
+                if(flag[n])
+                    flag[n] = false;
+                else
+                    return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -121,7 +163,38 @@ public class FocusGame {
      */
     public static boolean isPlacementStringValid(String placement) {
         // FIXME Task 5: determine whether a placement string is valid
-        return false;
+        if (!isPlacementStringWellFormed(placement)) {
+            return false;
+        }
+        // Ziyue TODO haven't finish
+
+        // use a virtual board to test all the stuff
+        // use addTileToBoard method to change states for next check
+        FocusGame testingBoard = new FocusGame();
+
+        for (int i = 0; i < placement.length(); i+=4) {
+            String testingPlacement = placement.substring(i,i+4);
+            Tile testingTile = new Tile(testingPlacement);
+            HashMap<Location,State> testingInfo = testingTile.getTileInfoLocation();
+
+            for (Map.Entry<Location, State> info: testingInfo.entrySet()) {
+                Location loc = info.getKey();
+                State state = info.getValue();
+
+                // pieces must be entirely on the board
+                if (!loc.isValid()) {
+                    return false;
+                }
+                // pieces must not overlap each other
+                if (testingBoard.boardStates[loc.getX()][loc.getY()] != null) {
+                    return false;
+                }
+            }
+            // adding current tile to testing board
+            testingBoard.addTileToBoard(testingPlacement);
+
+        }
+        return true;
     }
 
     /**
