@@ -3,11 +3,15 @@ package comp1110.ass2.gui;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -37,6 +41,153 @@ public class Viewer extends Application {
      * @param placement A valid placement string
      */
     void makePlacement(String placement) {
+        int position[][] = new int[10][3];
+        String[] each = new String[10];
+        for (int i = 0; i < placement.length() / 4; i++) {
+            each[i] = placement.substring(i * 4, (i + 1) * 4);
+        }
+        for (int i = 0; i < placement.length() / 4; i++) {
+            position[i][0] = Character.getNumericValue(each[i].charAt(1));
+            position[i][1] = Character.getNumericValue(each[i].charAt(2));
+            position[i][2] = Character.getNumericValue(each[i].charAt(3));
+//        		System.out.println(each[i]);
+        }
+        for (int i = 0; i < placement.length() / 4; i++) {
+            ImageView imageView = new ImageView(new Image("file:C:\\Users\\Li Benknag\\Desktop\\comp1110-ass2-tue12h\\src\\comp1110\\ass2\\gui\\assets\\" + each[i].charAt(0) + ".png"));
+//    	    	ImageView imageView1 = new ImageView(new Image("file:C:\\Users\\Li Benknag\\Desktop\\comp1110-ass2-tue12h\\src\\comp1110\\ass2\\gui\\assets\\"+"a"+".png"));
+            imageView.setRotate(position[i][2] * 90);
+//    	    	imageView.setX(position[i][0]*70);
+//    	    	imageView.setY(position[i][1]*70);
+            int rate = 70;
+            if (each[i].charAt(0) == 'e') {
+                imageView.setX(3 * 70 - 35);
+                imageView.setY(2 * 70 + 35);
+            }
+
+            switch (each[i].charAt(0)) {
+                case 'a':
+                    imageView.setFitHeight(rate * 2);
+                    imageView.setFitWidth(rate * 3);
+                    if (position[i][2] == 0 || position[i][2] == 2) {
+                        imageView.setX(position[i][0] * rate);
+                        imageView.setY(position[i][1] * rate);
+                    } else {
+                        imageView.setX(((double) position[i][0] - 0.5) * rate);
+                        imageView.setY(((double) position[i][1] + 0.5) * rate);
+                    }
+                    break;
+                case 'b':
+                    imageView.setFitHeight(rate * 2);
+                    imageView.setFitWidth(rate * 4);
+                    if (position[i][2] == 0 || position[i][2] == 2) {
+                        imageView.setX(position[i][0] * rate);
+                        imageView.setY(position[i][1] * rate);
+                    } else {
+                        imageView.setX((position[i][0] - 1) * rate);
+                        imageView.setY((position[i][1] + 1) * rate);
+                    }
+                    break;
+                case 'c':
+                    imageView.setFitHeight(rate * 2);
+                    imageView.setFitWidth(rate * 4);
+                    if (position[i][2] == 0 || position[i][2] == 2) {
+                        imageView.setX(position[i][0] * rate);
+                        imageView.setY(position[i][1] * rate);
+                    } else {
+                        imageView.setX((position[i][0] - 1) * rate);
+                        imageView.setY((position[i][1] + 1) * rate);
+                    }
+                    break;
+                case 'd':
+                    imageView.setFitHeight(rate * 2);
+                    imageView.setFitWidth(rate * 3);
+                    if (position[i][2] == 0 || position[i][2] == 2) {
+                        imageView.setX(position[i][0] * rate);
+                        imageView.setY(position[i][1] * rate);
+                    } else {
+                        imageView.setX(((double) position[i][0] - 0.5) * rate);
+                        imageView.setY(((double) position[i][1] + 0.5) * rate);
+                    }
+                    break;
+                case 'e':
+                    imageView.setFitHeight(rate * 2);
+                    imageView.setFitWidth(rate * 3);
+                    if (position[i][2] == 0 || position[i][2] == 2) {
+                        imageView.setX(position[i][0] * rate);
+                        imageView.setY(position[i][1] * rate);
+                    } else {
+                        imageView.setX(((double) position[i][0] - 0.5) * rate);
+                        imageView.setY(((double) position[i][1] + 0.5) * rate);
+                    }
+                    break;
+                case 'f':
+                    imageView.setFitHeight(rate * 1);
+                    imageView.setFitWidth(rate * 3);
+                    if (position[i][2] == 0 || position[i][2] == 2) {
+                        imageView.setX(position[i][0] * rate);
+                        imageView.setY(position[i][1] * rate);
+                    } else {
+                        imageView.setX((position[i][0] - 1) * rate);
+                        imageView.setY((position[i][1] + 1) * rate);
+                    }
+                    break;
+                case 'g':
+                    imageView.setFitHeight(rate * 2);
+                    imageView.setFitWidth(rate * 3);
+                    if (position[i][2] == 0 || position[i][2] == 2) {
+                        imageView.setX(position[i][0] * rate);
+                        imageView.setY(position[i][1] * rate);
+                    } else {
+                        imageView.setX(((double) position[i][0] - 0.5) * rate);
+                        imageView.setY(((double) position[i][1] + 0.5) * rate);
+                    }
+                    break;
+                case 'h':
+                    imageView.setFitHeight(rate * 3);
+                    imageView.setFitWidth(rate * 3);
+                    imageView.setX(position[i][0] * rate);
+                    imageView.setY(position[i][1] * rate);
+                    break;
+                case 'i':
+                    imageView.setFitHeight(rate * 2);
+                    imageView.setFitWidth(rate * 2);
+                    imageView.setX(position[i][0] * rate);
+                    imageView.setY(position[i][1] * rate);
+                    break;
+                case 'j':
+                    imageView.setFitHeight(rate * 2);
+                    imageView.setFitWidth(rate * 4);
+                    if (position[i][2] == 0 || position[i][2] == 2) {
+                        imageView.setX(position[i][0] * rate);
+                        imageView.setY(position[i][1] * rate);
+                    } else {
+                        imageView.setX((position[i][0] - 1) * rate);
+                        imageView.setY((position[i][1] + 1) * rate);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+//    	    	imageView.setFitHeight(100);
+//    	    	imageView.setFitWidth(100);
+            imageView.setPreserveRatio(false);
+//    	    	System.out.println(position[i][0]);
+            controls.getChildren().add(imageView);
+
+        }
+
+
+//    	ImageView imageView = new ImageView(new Image("file:C:\\Users\\Li Benknag\\Desktop\\comp1110-ass2-tue12h\\src\\comp1110\\ass2\\gui\\assets\\"+"a"+".png"));
+//    	ImageView imageView1 = new ImageView(new Image("file:C:\\Users\\Li Benknag\\Desktop\\comp1110-ass2-tue12h\\src\\comp1110\\ass2\\gui\\assets\\"+"a"+".png"));
+//    	GridPane pane = new GridPane();
+//    	imageView.setX(200);
+//    	imageView1.setX(4);
+//    	imageView.setRotate(90);
+//
+//    	controls.getChildren().add(imageView);
+//    	controls.getChildren().add(imageView1);
+
         // FIXME Task 4: implement the simple placement viewer
     }
 
@@ -51,6 +202,13 @@ public class Viewer extends Application {
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
+                controls.getChildren().clear();
+                HBox hb = new HBox();
+                hb.getChildren().addAll(label1, textField, button);
+                hb.setSpacing(10);
+                hb.setLayoutX(130);
+                hb.setLayoutY(VIEWER_HEIGHT - 50);
+                controls.getChildren().add(hb);
                 makePlacement(textField.getText());
                 textField.clear();
             }
@@ -74,5 +232,9 @@ public class Viewer extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
