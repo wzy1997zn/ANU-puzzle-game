@@ -53,7 +53,7 @@ public class Viewer extends Application {
 //        		System.out.println(each[i]);
         }
         for (int i = 0; i < placement.length() / 4; i++) {
-            ImageView imageView = new ImageView(new Image("file:C:\\Users\\Li Benknag\\Desktop\\comp1110-ass2-tue12h\\src\\comp1110\\ass2\\gui\\assets\\" + each[i].charAt(0) + ".png"));
+            ImageView imageView = new ImageView(new Image("comp1110/ass2/gui/assets/" + each[i].charAt(0) + ".png"));
 //    	    	ImageView imageView1 = new ImageView(new Image("file:C:\\Users\\Li Benknag\\Desktop\\comp1110-ass2-tue12h\\src\\comp1110\\ass2\\gui\\assets\\"+"a"+".png"));
             imageView.setRotate(position[i][2] * 90);
 //    	    	imageView.setX(position[i][0]*70);
