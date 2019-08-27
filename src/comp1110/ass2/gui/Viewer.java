@@ -50,11 +50,11 @@ public class Viewer extends Application {
             position[i][0] = Character.getNumericValue(each[i].charAt(1));
             position[i][1] = Character.getNumericValue(each[i].charAt(2));
             position[i][2] = Character.getNumericValue(each[i].charAt(3));
-//        		System.out.println(each[i]);
+//
         }
         for (int i = 0; i < placement.length() / 4; i++) {
             ImageView imageView = new ImageView(new Image("comp1110/ass2/gui/assets/" + each[i].charAt(0) + ".png"));
-//    	    	ImageView imageView1 = new ImageView(new Image("file:C:\\Users\\Li Benknag\\Desktop\\comp1110-ass2-tue12h\\src\\comp1110\\ass2\\gui\\assets\\"+"a"+".png"));
+//
             imageView.setRotate(position[i][2] * 90);
 //    	    	imageView.setX(position[i][0]*70);
 //    	    	imageView.setY(position[i][1]*70);
@@ -178,15 +178,7 @@ public class Viewer extends Application {
         }
 
 
-//    	ImageView imageView = new ImageView(new Image("file:C:\\Users\\Li Benknag\\Desktop\\comp1110-ass2-tue12h\\src\\comp1110\\ass2\\gui\\assets\\"+"a"+".png"));
-//    	ImageView imageView1 = new ImageView(new Image("file:C:\\Users\\Li Benknag\\Desktop\\comp1110-ass2-tue12h\\src\\comp1110\\ass2\\gui\\assets\\"+"a"+".png"));
-//    	GridPane pane = new GridPane();
-//    	imageView.setX(200);
-//    	imageView1.setX(4);
-//    	imageView.setRotate(90);
-//
-//    	controls.getChildren().add(imageView);
-//    	controls.getChildren().add(imageView1);
+
 
         // FIXME Task 4: implement the simple placement viewer
     }
