@@ -1,6 +1,7 @@
 package comp1110.ass2;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -22,7 +23,8 @@ public class FocusGame {
 
     /**
      * record whether the tiles has been used
-     */private boolean[] tileUsed = {false, false, false, false, false, false, false, false, false, false};
+     */
+    private boolean[] tileUsed = {false, false, false, false, false, false, false, false, false, false};
 
     /**
      * constructor
@@ -32,12 +34,21 @@ public class FocusGame {
     }
 
     /**
+     * Check if that type of tile has been put on the board
+     * @param type
+     * @return if the tile has been put on the board
+     */
+    public boolean isTileTypeUsed(int type){
+        return tileUsed[type];
+    }
+
+    /**
      * Modified by Ziyue Wang, need to use tileUsed, so remove static
      * check if a tile has been put on the board
      * @param tile the tile you want to check
      * @return if the tile has been put on the board
      */
-    private boolean isTileUsed(Tile tile){
+    public boolean isTileUsed(Tile tile){
         // add code here
         TileType type = tile.getTileType();
         int typeIndex = type.getIndex();
@@ -109,9 +120,9 @@ public class FocusGame {
      */
     static boolean isPiecePlacementWellFormed(String piecePlacement) {
         // FIXME Task 2: determine whether a piece placement is well-formed
-        if(piecePlacement.length() != 4)
+        if(piecePlacement.length() != 4) // check the length
             return false;
-        String reg = "[a-j][0-8][0-4][0-3]";
+        String reg = "[a-j][0-8][0-4][0-3]"; // check the format with regular expression
         return piecePlacement.matches(reg);
     }
 
@@ -126,10 +137,14 @@ public class FocusGame {
      */
     public static boolean isPlacementStringWellFormed(String placement) {
         // FIXME Task 3: determine whether a placement is well-formed
+
         boolean[] flag = new boolean[10];
+        // initial flag which is used for checking duplication
         for(int i = 0; i < 10; i++)
             flag[i] = true;
+
         int len = placement.length();
+        // check the length
         if(len == 0)
             return false;
         if(len%4 != 0)
@@ -139,9 +154,9 @@ public class FocusGame {
                 if(isPiecePlacementWellFormed(placement.substring(i,i+4)) == false)
                     return false;
                 int n = placement.charAt(i)-'a';
-                if(flag[n])
+                if(flag[n]) // check for duplication
                     flag[n] = false;
-                else
+                else // if it the tile has been used
                     return false;
             }
         }
@@ -224,7 +239,70 @@ public class FocusGame {
      */
     static Set<String> getViablePiecePlacements(String placement, String challenge, int col, int row) {
         // FIXME Task 6: determine the set of all viable piece placements given existing placements and a challenge
-        return null;
+        //if(isPlacementStringWellFormed(placement) == false)
+        //    return null;
+        if(isPlacementStringValid(placement))
+            return null;
+        //System.out.println("Hi");
+        State[][] challengeBoard = new State[5][9];
+        int index = 0;
+
+        // initial challenge board
+        for(int r = 1; r < 4; r++){
+            for(int c = 3; c < 6; c++){
+                challengeBoard[r][c] = State.getState(challenge.charAt(index));
+                index++;
+            }
+        }
+
+        FocusGame testingBoard = new FocusGame();
+
+        // initial tile borad
+        for (int i = 0; i < placement.length(); i+=4) {
+            String testingPlacement = placement.substring(i,i+4);
+            Tile testingTile = new Tile(testingPlacement);
+            HashMap<Location,State> testingInfo = testingTile.getTileInfoLocation();
+
+            testingBoard.addTileToBoard(testingPlacement);
+        }
+
+        HashSet<String> res = new HashSet<>();
+
+        //check all possible combinations
+        for(int type = 1; type < 11; type++){
+            if(testingBoard.isTileTypeUsed(type-1))
+                continue;
+            for(int orientation = 0; orientation < 4; orientation++){
+                char c = (char)('a'+type-1);
+                if(isTileValid(new Tile(String.format("%c%d%d%d",c,col,row,orientation)),testingBoard.boardStates,challengeBoard))
+                    res.add(String.format("%c%d%d%d",c,col,row,orientation));
+            }
+        }
+        return res;
+    }
+
+    private static boolean isTileValid(Tile tile, State[][] boardStates, State[][] challengeBoard){
+        HashMap<Location,State> info = tile.getTileInfoLocation();
+
+        for (Map.Entry<Location, State> i: info.entrySet()) {
+            Location loc = i.getKey();
+            State state = i.getValue();
+
+            // pieces must be entirely on the board
+            if (!loc.isValid()) {
+                return false;
+            }
+            // pieces must not overlap each other
+            if (boardStates[loc.getX()][loc.getY()] != null) {
+                return false;
+            }
+            // pieces must satisfy the challenge
+            if(challengeBoard[loc.getX()][loc.getY()]!=null && state == challengeBoard[loc.getX()][loc.getY()])
+                continue;
+            else
+                return false;
+        }
+        return true;
     }
 
     /**
