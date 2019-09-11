@@ -309,10 +309,7 @@ public class Board extends Application {
      */
     private boolean updatePlacement() {
         // FIXME Task 7: Implement a basic playable Focus Game in JavaFX that only allows pieces to be placed in valid places
-        if (currentPlacement.equals("")) {
-            System.out.println("Current placement: " + currentPlacement);
-            return true;
-        }
+
         String lastPlacement = currentPlacement;
         currentPlacement = "";
         for (Node node: tiles.getChildren()) {
@@ -325,6 +322,10 @@ public class Board extends Application {
             System.out.println("Current placement: " + currentPlacement);
             return true;
         } else {
+            if (currentPlacement.equals("")) {
+                System.out.println("Current placement: " + currentPlacement);
+                return true;
+            }
             currentPlacement = lastPlacement;
             return false;
         }
