@@ -181,7 +181,6 @@ public class FocusGame {
         if (!isPlacementStringWellFormed(placement)) {
             return false;
         }
-        // Ziyue TODO haven't finish
 
         // use a virtual board to test all the stuff
         // use addTileToBoard method to change states for next check
