@@ -138,7 +138,6 @@ public class Board extends Application {
 
             for (int i = 0; i < 4; i++) {
                 Image curImg = new Image(Board.class.getResource(URI_BASE + URI_TILES + tile + i + ".png").toString());
-                //FIXME need 4 rotated imgs for each tile: a0 a1 a2 a3
                 image[i] = curImg;
             }
 
@@ -148,7 +147,7 @@ public class Board extends Application {
             orientation = 0;
             tilePlaced[tile - 'a'] = false;
 
-            // not sure yet, just use ass1 set now
+            //FIXME not sure yet, just use ass1 set now
             homeX = MARGIN_X + ((tile - 'a') % 3) * SQUARE_SIZE;
             setLayoutX(homeX);
             currentX = homeX;
@@ -244,6 +243,11 @@ public class Board extends Application {
             setFitWidth((int)(getImage().getWidth() * SCALE_RATE * TILE_RATE));
             setFitHeight((int)(getImage().getHeight() * SCALE_RATE * TILE_RATE));
             toFront();
+        }
+
+        @Override
+        public String toString() {
+            return "" + tileID + gridX + gridY + orientation;
         }
     }
 }
