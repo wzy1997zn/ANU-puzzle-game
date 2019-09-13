@@ -223,6 +223,7 @@ public class Viewer extends Application {
         makeControls();
 
         primaryStage.setScene(scene);
+        primaryStage.setOpacity(0.5);//test
         primaryStage.show();
     }
 
