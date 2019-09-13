@@ -241,12 +241,8 @@ public class FocusGame {
         // FIXME Task 6: determine the set of all viable piece placements given existing placements and a challenge
         //if(isPlacementStringWellFormed(placement) == false)
         //    return null;
-        if(isPlacementStringValid(placement))
-            return null;
-        //System.out.println("Hi");
         State[][] challengeBoard = new State[5][9];
         int index = 0;
-
         // initial challenge board
         for(int r = 1; r < 4; r++){
             for(int c = 3; c < 6; c++){
@@ -257,32 +253,73 @@ public class FocusGame {
 
         FocusGame testingBoard = new FocusGame();
 
-        // initial tile borad
-        for (int i = 0; i < placement.length(); i+=4) {
-            String testingPlacement = placement.substring(i,i+4);
-            Tile testingTile = new Tile(testingPlacement);
-            HashMap<Location,State> testingInfo = testingTile.getTileInfoLocation();
+        if(placement != null){
+            // initial tile borad
+            for (int i = 0; i < placement.length(); i+=4) {
+                String testingPlacement = placement.substring(i,i+4);
+                Tile testingTile = new Tile(testingPlacement);
+                HashMap<Location,State> testingInfo = testingTile.getTileInfoLocation();
 
-            testingBoard.addTileToBoard(testingPlacement);
-        }
-
-        HashSet<String> res = new HashSet<>();
-
-        //check all possible combinations
-        for(int type = 1; type < 11; type++){
-            if(testingBoard.isTileTypeUsed(type-1))
-                continue;
-            for(int orientation = 0; orientation < 4; orientation++){
-                char c = (char)('a'+type-1);
-                if(isTileValid(new Tile(String.format("%c%d%d%d",c,col,row,orientation)),testingBoard.boardStates,challengeBoard))
-                    res.add(String.format("%c%d%d%d",c,col,row,orientation));
+                testingBoard.addTileToBoard(testingPlacement);
             }
         }
+        /**
+        for(int i = 0; i < 5; i++){
+            for(int j = 0; j < 9; j++){
+                System.out.print(testingBoard.boardStates[i][j]);
+            }
+            System.out.println();
+        }
+         */
+
+        // assign a HashSet to store the result
+        HashSet<String> res = new HashSet<>();
+
+        // minimize the range
+        int r_start = 0;
+        int r_end = 4;
+        int c_start = 0;
+        int c_end = 8;
+
+        if(row > 3)
+            r_start = row - 4;
+        if(row < 1)
+            r_end = row + 4;
+        if(col > 3)
+            c_start = col - 4;
+        if(col < 5)
+            c_end = col + 4;
+
+        //check all possible combinations
+        for(int r = r_start; r <= r_end; r++){
+            for(int c = c_start; c <= c_end; c++){
+                for(int type = 1; type < 11; type++){
+                    if(testingBoard.isTileTypeUsed(type-1))
+                        continue;
+                    for(int orientation = 0; orientation < 4; orientation++){
+                        char ch = (char)('a'+type-1);
+
+                        // check symmetry
+                        //if(ch == 'f' || ch == 'j')
+                        //    if(orientation == 2 || orientation == 3)
+                        //        continue;
+                        //System.out.println(String.format("%c%d%d%d",ch,col,row,orientation));
+                        if(isTileValid(new Tile(String.format("%c%d%d%d",ch,c,r,orientation)),testingBoard.boardStates,challengeBoard,row,col))
+                            res.add(String.format("%c%d%d%d",ch,c,r,orientation));
+                    }
+                }
+            }
+        }
+
+        System.out.println(res);
+        if(res.isEmpty())
+            return null;
         return res;
     }
 
-    private static boolean isTileValid(Tile tile, State[][] boardStates, State[][] challengeBoard){
+    private static boolean isTileValid(Tile tile, State[][] boardStates, State[][] challengeBoard, int row, int col){
         HashMap<Location,State> info = tile.getTileInfoLocation();
+        boolean flag = false;
 
         for (Map.Entry<Location, State> i: info.entrySet()) {
             Location loc = i.getKey();
@@ -296,13 +333,16 @@ public class FocusGame {
             if (boardStates[loc.getX()][loc.getY()] != null) {
                 return false;
             }
+            //pieces must cover the exact cell
+            if(loc.getX() == row && loc.getY() == col)
+                flag = true;
             // pieces must satisfy the challenge
             if(challengeBoard[loc.getX()][loc.getY()]!=null && state == challengeBoard[loc.getX()][loc.getY()])
                 continue;
-            else
+            else if(challengeBoard[loc.getX()][loc.getY()]!=null && state != challengeBoard[loc.getX()][loc.getY()])
                 return false;
         }
-        return true;
+        return flag;
     }
 
     /**
