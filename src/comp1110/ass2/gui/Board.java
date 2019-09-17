@@ -5,10 +5,15 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.util.Set;
+
+import static comp1110.ass2.FocusGame.*;
 /**
  * the visible edition of focus game
  * code skeleton by Ziyue Wang
@@ -22,7 +27,7 @@ public class Board extends Application {
 
     /* below are some basic const of board scale and position */
     private static final double SCALE_RATE = 0.5; // scale all the things to ensure they can be show in 933*700 window
-                                                  // including tile img, board img, square size
+    // including tile img, board img, square size
     private static final double TILE_RATE = 0.70; // for scaling the tile image
     private static final int SQUARE_SIZE = (int)(70 * SCALE_RATE);
 
@@ -41,6 +46,10 @@ public class Board extends Application {
     private static final int ZERO_X = BOARD_X + (int)(50 * SCALE_RATE); // the origin position of the baseboard
     private static final int ZERO_Y = BOARD_Y + (int)(90 * SCALE_RATE);
 
+    // F
+    private static final int BUTTON_X = 80;
+    private static final int BUTTON_Y = 450;
+
     /* the given width and height of the window */
     private static final int BOARD_WIDTH = 933;
     private static final int BOARD_HEIGHT = 700;
@@ -49,6 +58,12 @@ public class Board extends Application {
     private final Group root = new Group();
     private final Group tiles = new Group();
     private final Group board = new Group();
+
+    // F
+    private final Group choices = new Group();
+    private final Group challenges = new Group();
+    private String challengeString = "";
+    private String[] challengeSets = {"RRRBWBBRB","RWWRRRWWW"};
 
     //a list storing whether tile is used, can also get the state by tiles.getChildren().get(i).placed
     private boolean[] tilePlaced = new boolean[10];
@@ -59,11 +74,11 @@ public class Board extends Application {
 
 
 
-    // FIXME Task 8: Implement challenges (you may use challenges and assets provided for you in comp1110.ass2.gui.assets: sq-b.png, sq-g.png, sq-r.png & sq-w.png)
+    // FIXME Task 8: Implement choices (you may use choices and assets provided for you in comp1110.ass2.gui.assets: sq-b.png, sq-g.png, sq-r.png & sq-w.png)
 
     // FIXME Task 10: Implement hints
 
-    // FIXME Task 11: Generate interesting challenges (each challenge may have just one solution)
+    // FIXME Task 11: Generate interesting choices (each challenge may have just one solution)
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -73,16 +88,72 @@ public class Board extends Application {
         root.getChildren().add(tiles);
         root.getChildren().add(board);
 
+        // F
+        root.getChildren().addAll(choices,challenges);
+        makeChallengeBox();
+
         makeBoard();
         makeTiles();
         newGame();
-        
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     private void newGame() {
         focusGame = new FocusGame();
+    }
+
+    // F
+    private void makeChallenges(ChoiceBox<String> choices) {
+        String choice = choices.getValue();
+        challengeString = challengeSets[choice.charAt(choice.length()-1) - '0' - 1];
+        challenges.getChildren().clear();
+        for (int i = 0; i < challengeString.length(); i++) {
+            ImageView square = new ImageView(new Image(Board.class.getResource(
+                    URI_BASE + "sq-" + Character.toLowerCase(challengeString.charAt(i)) + ".png").toString()));
+            square.setFitHeight(SQUARE_SIZE);
+            square.setFitWidth(SQUARE_SIZE);
+//            int X = TILES_X + MARGIN_X + ((tile - 'a') % 5) * 5 * SQUARE_SIZE;
+//            setLayoutX(homeX);
+
+            int X = ZERO_X + 3*SQUARE_SIZE + (i % 3)*SQUARE_SIZE;
+            int Y = ZERO_Y + SQUARE_SIZE + (i/3)*SQUARE_SIZE;
+            square.setX(X);
+            square.setY(Y);
+            challenges.getChildren().add(square);
+//            currentY = gridY * SQUARE_SIZE + ZERO_Y;
+
+
+        }
+    }
+
+    private boolean isValidCenter(String piecePlacement, String placement) {
+        Set<String> validPlacements = getViablePiecePlacements(placement, challengeString, 0, 0);
+        for (String vPlcement: validPlacements) {
+            if (!vPlcement.equals(piecePlacement)) {
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    private void makeChallengeBox() {
+        ChoiceBox<String> choices = new ChoiceBox<>();
+        choices.setLayoutX(BUTTON_X);
+        choices.setLayoutY(BUTTON_Y-50);
+        choices.getItems().addAll("Challenge 1", "Challenge 2");
+        this.choices.getChildren().add(choices);
+        System.out.println(choices.getValue());
+
+
+        Button changeLevel = new Button("Start");
+        changeLevel.setLayoutX(BUTTON_X);
+        changeLevel.setLayoutY(BUTTON_Y);
+        changeLevel.setOnAction(e -> makeChallenges(choices));
+        this.choices.getChildren().add(changeLevel);
+
     }
 
     /**
@@ -100,7 +171,7 @@ public class Board extends Application {
      */
     private void makeBoard() {
         board.getChildren().clear();
-        
+
         ImageView baseBoard = new ImageView();
         baseBoard.setImage(new Image(BASEBOARD_URI));
         baseBoard.setFitWidth(BASEBOARD_WIDTH);
@@ -236,15 +307,15 @@ public class Board extends Application {
          * fit the tile img to the grid on board
          */
         private void fitToGrid() {
-            if (onBoard()) {
-                gridX = (int)Math.round((currentX - ZERO_X) / SQUARE_SIZE);
-                gridY = (int)Math.round((currentY - ZERO_Y) / SQUARE_SIZE);
+            if (onBoard()) { // F
+                gridX = (int) Math.round((currentX - ZERO_X) / SQUARE_SIZE);
+                gridY = (int) Math.round((currentY - ZERO_Y) / SQUARE_SIZE);
 
-                currentX = gridX * SQUARE_SIZE + ZERO_X;
                 currentY = gridY * SQUARE_SIZE + ZERO_Y;
 
                 setLayoutX(currentX);
                 setLayoutY(currentY);
+
 
             } else {
                 // if not on board, go back
@@ -315,7 +386,10 @@ public class Board extends Application {
         for (Node node: tiles.getChildren()) {
             DraggableTile tile = (DraggableTile)node;
             if (tile.placed) {
-                currentPlacement += tile;
+                if (isCenterCovered() && isValidCenter(tile.toString(), currentPlacement)) {
+                    currentPlacement += tile;
+                    makePlacementWellFormed();
+                }
             }
         }
         if (FocusGame.isPlacementStringValid(currentPlacement)) {
@@ -329,5 +403,15 @@ public class Board extends Application {
             currentPlacement = lastPlacement;
             return false;
         }
+    }
+
+    //F
+    // make the currentPlacement well formed
+    private void makePlacementWellFormed() {
+
+    }
+
+    private boolean isCenterCovered() {
+        return false;
     }
 }
