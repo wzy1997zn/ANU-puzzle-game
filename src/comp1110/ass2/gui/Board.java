@@ -311,6 +311,7 @@ public class Board extends Application {
                 gridX = (int) Math.round((currentX - ZERO_X) / SQUARE_SIZE);
                 gridY = (int) Math.round((currentY - ZERO_Y) / SQUARE_SIZE);
 
+                currentX = gridX * SQUARE_SIZE + ZERO_X;
                 currentY = gridY * SQUARE_SIZE + ZERO_Y;
 
                 setLayoutX(currentX);
@@ -356,7 +357,8 @@ public class Board extends Application {
          */
         private void rotate() {
             // rotating is shown by changing the img
-            // also should make the xy right (have not checked)
+            // also should make the xy right (checked)
+            // FIXME should exist a time interval to ensure not to rotate the tile so quickly
             this.orientation = (this.orientation + 1) % 4;
             this.setImage(image[orientation]);
             setFitWidth((int)(getImage().getWidth() * SCALE_RATE * TILE_RATE));
