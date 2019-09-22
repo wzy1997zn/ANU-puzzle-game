@@ -256,8 +256,8 @@ public class FocusGame {
             // initial tile borad
             for (int i = 0; i < placement.length(); i+=4) {
                 String testingPlacement = placement.substring(i,i+4);
-                Tile testingTile = new Tile(testingPlacement);
-                HashMap<Location,State> testingInfo = testingTile.getTileInfoLocation();
+                //Tile testingTile = new Tile(testingPlacement);
+                //HashMap<Location,State> testingInfo = testingTile.getTileInfoLocation();
 
                 testingBoard.addTileToBoard(testingPlacement);
             }
