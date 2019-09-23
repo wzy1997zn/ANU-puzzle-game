@@ -55,9 +55,9 @@ public class Board extends Application {
     private static final int BOARD_HEIGHT = 700;
 
     /* scene components */
-    private final Group root = new Group();
-    private final Group tiles = new Group();
-    private final Group board = new Group();
+    public final Group root = new Group();
+    public final Group tiles = new Group();
+    public final Group board = new Group();
 
     // F
     private final Group choices = new Group();
@@ -68,9 +68,9 @@ public class Board extends Application {
     //a list storing whether tile is used, can also get the state by tiles.getChildren().get(i).placed
     private boolean[] tilePlaced = new boolean[10];
     // main game
-    private FocusGame focusGame;
+    public FocusGame focusGame;
     // a string storing current placement on board
-    private String currentPlacement = "";
+    public String currentPlacement = "";
 
 
 
@@ -100,7 +100,7 @@ public class Board extends Application {
         primaryStage.show();
     }
 
-    private void newGame() {
+    public void newGame() {
         focusGame = new FocusGame();
     }
 
@@ -129,12 +129,13 @@ public class Board extends Application {
     }
 
     private boolean isValidCenter(String piecePlacement, String placement) {
-        Set<String> validPlacements = getViablePiecePlacements(placement, challengeString, 0, 0);
-        for (String vPlcement: validPlacements) {
-            if (!vPlcement.equals(piecePlacement)) {
-                return false;
-            }
-        }
+//        Set<String> validPlacements = getViablePiecePlacements(placement, challengeString, 0, 0);
+//        for (String vPlcement: validPlacements) {
+//            if (!vPlcement.equals(piecePlacement)) {
+//                return false;
+//            }
+//        }
+//        challenge not done yet just make other method works update by Ziyue Wang
         return true;
 
     }
@@ -159,7 +160,7 @@ public class Board extends Application {
     /**
      * generate draggable imgs of tiles
      */
-    private void makeTiles() {
+    public void makeTiles() {
         tiles.getChildren().clear();
         for (char i = 'a'; i <= 'j'; i++) {
             tiles.getChildren().add(new DraggableTile(i));
@@ -169,7 +170,7 @@ public class Board extends Application {
     /**
      * set up baseboard
      */
-    private void makeBoard() {
+    public void makeBoard() {
         board.getChildren().clear();
 
         ImageView baseBoard = new ImageView();
@@ -414,6 +415,6 @@ public class Board extends Application {
     }
 
     private boolean isCenterCovered() {
-        return false;
+        return true; // not done yet but let other method work updated by Ziyue Wang
     }
 }
