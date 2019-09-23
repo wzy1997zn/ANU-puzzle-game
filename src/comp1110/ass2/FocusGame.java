@@ -362,6 +362,56 @@ public class FocusGame {
      */
     public static String getSolution(String challenge) {
         // FIXME Task 9: determine the solution to the game, given a particular challenge
+        String res = solve(null,challenge);
+        System.out.println(res);
+        return res;
+    }
+
+    // still have bugs, the palcementString is not well-formed
+    public static String solve(String placement, String challenge){
+        FocusGame testGame = new FocusGame();
+        // initiate the board
+        if(placement != null)
+            testGame.addTileToBoard(placement);
+
+        int row = 0, col = 0;
+        boolean flag = true; // whether get final solution
+        boolean flag2 = false; // whether found next cell to cover
+
+        for(int r = 0; r < 5; r++){
+            for(int c = 0; c < 9; c++){
+                if(r == 4 && (c == 0 || c == 8))
+                    continue;
+                if(testGame.boardStates[r][c] == null){ // find an unoccupied cell
+                    flag = false;
+                    row = r;
+                    col = c;
+                    flag2 = true;
+                    break;
+                }
+            }
+            if(flag2)
+                break;
+        }
+        if(flag)
+            return placement; // if get final solution, return it
+
+        Set<String> hashSet = getViablePiecePlacements(placement, challenge, row, col); // get a set of viable placements
+
+        if(hashSet == null) // if not viable placement, return null
+            return null;
+
+        // try each placement
+        for(String place: hashSet){
+            if(place != null) {
+                String solution = solve(placement+place, challenge);
+                if(solution == null)
+                    continue;
+                else
+                    return solution;
+            }
+        }
+
         return null;
     }
 

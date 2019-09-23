@@ -86,7 +86,7 @@ public class Tile {
                 ori = Orientation.WEST;
                 break;
             default:
-                System.out.println("SHOULD NOT REACH HERE");
+                System.out.println("SHOULD NOT REACH HERE: " + orientationIndex);
                 break;
         }
         return ori;
