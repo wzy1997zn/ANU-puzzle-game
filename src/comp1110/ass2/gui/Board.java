@@ -356,7 +356,7 @@ public class Board extends Application {
         /**
          * rotate the tile img
          */
-        private void rotate() {
+        public void rotate() {
             // rotating is shown by changing the img
             // also should make the xy right (checked)
             // FIXME should exist a time interval to ensure not to rotate the tile so quickly
