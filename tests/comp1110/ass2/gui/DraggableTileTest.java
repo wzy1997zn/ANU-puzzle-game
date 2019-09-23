@@ -22,7 +22,7 @@ public class DraggableTileTest {
 
             @Override
             public void run() {
-                new JFXPanel(); // Initializes the JavaFx Platform
+                new JFXPanel();
                 Platform.runLater(new Runnable() {
 
                     @Override
