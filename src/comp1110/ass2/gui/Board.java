@@ -227,6 +227,9 @@ public class Board extends Application {
 
         Image[] image = new Image[4];
 
+        long lastRotateTime = System.currentTimeMillis();
+        private final long ALLOWED_INTERVAL = 50;
+
         DraggableTile(char tile) {
             super(tile);
 
@@ -255,9 +258,13 @@ public class Board extends Application {
                 event handlers
              */
             setOnScroll(event -> {
-                rotate();
-                while (!updatePlacement()) {
-                    fitToHome();
+                long curTime = System.currentTimeMillis();
+                if (curTime - lastRotateTime > ALLOWED_INTERVAL) {
+                    lastRotateTime = curTime;
+                    rotate();
+                    while (!updatePlacement()) {
+                        fitToHome();
+                    }
                 }
             });
 
@@ -359,7 +366,7 @@ public class Board extends Application {
         public void rotate() {
             // rotating is shown by changing the img
             // also should make the xy right (checked)
-            // FIXME should exist a time interval to ensure not to rotate the tile so quickly
+            // should exist a time interval to ensure not to rotate the tile so quickly. FIXED
             this.orientation = (this.orientation + 1) % 4;
             this.setImage(image[orientation]);
             setFitWidth((int)(getImage().getWidth() * SCALE_RATE * TILE_RATE));
