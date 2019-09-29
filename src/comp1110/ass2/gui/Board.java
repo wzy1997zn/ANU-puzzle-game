@@ -58,6 +58,7 @@ public class Board extends Application {
     public final Group root = new Group();
     public final Group tiles = new Group();
     public final Group board = new Group();
+    public final Group hints = new Group();
 
     // F
     private final Group choices = new Group();
@@ -87,6 +88,7 @@ public class Board extends Application {
 
         root.getChildren().add(tiles);
         root.getChildren().add(board);
+        root.getChildren().add(hints);
 
         // F
         root.getChildren().addAll(choices,challenges);
@@ -180,8 +182,32 @@ public class Board extends Application {
         baseBoard.setX(BOARD_X);
         baseBoard.setY(BOARD_Y);
 
+        baseBoard.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCharacter().equals("/")) {
+                showHint();
+            }
+        });
+
+        baseBoard.setOnKeyReleased(keyEvent -> {
+            if (keyEvent.getCharacter().equals("/")) {
+                hideHint();
+            }
+        });
+
         board.getChildren().add(baseBoard);
         board.toBack();
+    }
+
+    /**
+     * add a random valid tile to board to show possible placement as a hint
+     */
+    private void showHint() {
+    }
+
+    /**
+     * hide the hint
+     */
+    private void hideHint() {
     }
 
     public static void main(String[] args) {
@@ -261,10 +287,13 @@ public class Board extends Application {
                 long curTime = System.currentTimeMillis();
                 if (curTime - lastRotateTime > ALLOWED_INTERVAL) {
                     lastRotateTime = curTime;
+                    String oldPlacement = this.toString();
                     rotate();
                     while (!updatePlacement()) {
                         fitToHome();
                     }
+                    String newPlacement = this.toString();
+                    updateFocusGame(oldPlacement, newPlacement);
                 }
             });
 
@@ -289,11 +318,14 @@ public class Board extends Application {
             });
 
             setOnMouseReleased(event -> {
+                String oldPlacement = this.toString();
                 fitToGrid();
                 updateStates();
                 while (!updatePlacement()) {
                     fitToHome();
                 }
+                String newPlacement = this.toString();
+                updateFocusGame(oldPlacement, newPlacement);
             });
         }
 
@@ -383,6 +415,23 @@ public class Board extends Application {
         }
     }
 
+    private void updateFocusGame(String oldPlacement, String newPlacement) {
+        if (oldPlacement.length() != 4) { // was not on board
+            if (newPlacement.length() != 4) { // is not on board
+                // nothing to do
+            } else { // is on board
+                focusGame.addTileToBoard(newPlacement);
+            }
+        } else { // was on board
+            if (newPlacement.length() != 4) { // is not on board
+                focusGame.deleteTileFromBoard(oldPlacement);
+            } else { // is on board
+                focusGame.updateTileOnBoard(oldPlacement, newPlacement);
+            }
+        }
+        focusGame.outputStates();
+    }
+
     /**
      * use the method completed in task 5 to check whether the placement is vaild
      * if not, make last place to home position
@@ -398,6 +447,7 @@ public class Board extends Application {
             if (tile.placed) {
                 if (isCenterCovered() && isValidCenter(tile.toString(), currentPlacement)) {
                     currentPlacement += tile;
+
                     makePlacementWellFormed();
                 }
             }

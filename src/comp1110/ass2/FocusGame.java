@@ -66,6 +66,11 @@ public class FocusGame {
         tileUsed[typeIndex-1] = true;
     }
 
+    private void cleanTile(Tile tile) {
+        int typeIndex = tile.getTileType().getIndex();
+        tileUsed[typeIndex-1] = false;
+    }
+
     /**
      * Update the boardstates data structure due to a valid (correct) new
      * tile placement.
@@ -82,18 +87,51 @@ public class FocusGame {
 
     }
 
+    private void cleanBoardStates(Tile tile) {
+        HashMap<Location, State> tileInfo = tile.getTileInfoLocation();
+        for (Map.Entry<Location, State> info: tileInfo.entrySet()) {
+            Location loc = info.getKey();
+//            State state = info.getValue();
+            boardStates[loc.getX()][loc.getY()] = null;
+        }
+    }
+
     /**
      * Add a new tile placement to the board state, updating
      * all relevant data structures.
      * @param placement The placement to add.
      */
-    private void addTileToBoard(String placement) {
+    public void addTileToBoard(String placement) {
         // implemented by Ziyue
         Tile tile = new Tile(placement);
 
         updateBoardStates(tile);
         updateTiles(tile);
     }
+
+    /**
+     * change a tile's state and all related states
+     * @param oldPlacement The old placement to delete.
+     * @param newPlacement The new placement to add.
+     */
+    public void updateTileOnBoard(String oldPlacement, String newPlacement) {
+        deleteTileFromBoard(oldPlacement);
+        addTileToBoard(newPlacement);
+    }
+
+    /**
+     * delete a tile's state from board
+     * @param placement The placement to delete
+     */
+    public void deleteTileFromBoard(String placement) {
+        Tile tile = new Tile(placement);
+
+        cleanBoardStates(tile);
+        cleanTile(tile);
+
+    }
+
+
 
     /**
      * Given a location, return its current state.
@@ -415,4 +453,19 @@ public class FocusGame {
         return null;
     }
 
+    /**
+     * for easy debugging
+     */
+    public void outputStates() {
+        for (int i = 0; i < boardStates.length; i++) {
+            for (int j = 0; j < boardStates[0].length; j++) {
+                if (boardStates[i][j] == null) {
+                    System.out.print("O" + " ");
+                } else {
+                    System.out.print(boardStates[i][j] + " ");
+                }
+            }
+            System.out.println();
+        }
+    }
 }
