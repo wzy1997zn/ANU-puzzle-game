@@ -1,0 +1,27 @@
+# Write your name and UID here.
+#
+reviewer:
+    name: Ziyue Wang
+    uid: u6891105
+
+# Write the name of the author of the code here.
+#
+author:
+  name: Pinxu Pan
+  uid: u6969758
+
+# Write the class or method being reviewed here.
+#
+component: Board.makeChallenges(), Board.makeChallegeBox() (32 lines)
+
+# Write a list of review comments here.
+#
+comments:
+  - The best feature of the codes is that they implemented a function in a small amont of codes.
+  - Acturally there is no good comments for helping understand but variables names are easy to understand.
+  - The program decomposition is appropriate, one is for choice logic, one is for choice box GUI.
+  - Good code style. Names show purpose clearly.
+  - I did not find errors, but maybe there should be more challenges.
+
+
+
