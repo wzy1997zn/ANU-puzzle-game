@@ -9,11 +9,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.util.Set;
 
-import static comp1110.ass2.FocusGame.*;
 /**
  * the visible edition of focus game
  * code skeleton by Ziyue Wang
@@ -77,7 +77,6 @@ public class Board extends Application {
 
     // FIXME Task 8: Implement choices (you may use choices and assets provided for you in comp1110.ass2.gui.assets: sq-b.png, sq-g.png, sq-r.png & sq-w.png)
 
-    // FIXME Task 10: Implement hints
 
     // FIXME Task 11: Generate interesting choices (each challenge may have just one solution)
 
@@ -98,8 +97,29 @@ public class Board extends Application {
         makeTiles();
         newGame();
 
+        addKeyHandler(scene);
+
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void addKeyHandler(Scene scene) {
+        scene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.SLASH)) {
+
+                if (hints.getChildren().isEmpty()) {
+//                    System.out.println("hint");
+                    showHint();
+                }
+            }
+        });
+
+        scene.setOnKeyReleased(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.SLASH)) {
+//                System.out.println("hint over");
+                hideHint();
+            }
+        });
     }
 
     public void newGame() {
@@ -182,32 +202,71 @@ public class Board extends Application {
         baseBoard.setX(BOARD_X);
         baseBoard.setY(BOARD_Y);
 
-        baseBoard.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCharacter().equals("/")) {
-                showHint();
-            }
-        });
-
-        baseBoard.setOnKeyReleased(keyEvent -> {
-            if (keyEvent.getCharacter().equals("/")) {
-                hideHint();
-            }
-        });
-
         board.getChildren().add(baseBoard);
         board.toBack();
     }
 
+
+    // FIXME Task 10: Implement hints
     /**
-     * add a random valid tile to board to show possible placement as a hint
+     * add a valid tile to board to show possible placement as a hint
      */
     private void showHint() {
+        String hintPlacement = getHint();
+        if (hintPlacement.equals("")) {
+            return; // no hint
+        }
+
+        String tileChar = "" + hintPlacement.charAt(0);
+        int ori = (hintPlacement.charAt(3) - '0');
+        ImageView hintImage = new ImageView();
+        hintImage.setImage(new Image(Board.class.getResource(URI_BASE + URI_TILES + tileChar + ori + ".png").toString()));
+        hintImage.setFitWidth((int)(hintImage.getImage().getWidth() * SCALE_RATE * TILE_RATE));
+        hintImage.setFitHeight((int)(hintImage.getImage().getHeight() * SCALE_RATE * TILE_RATE));
+
+        hintImage.setOpacity(0.5);
+
+        double currentX = (hintPlacement.charAt(1) - '0') * SQUARE_SIZE + ZERO_X;
+        double currentY = (hintPlacement.charAt(2) - '0') * SQUARE_SIZE + ZERO_Y;
+
+        hintImage.setLayoutX(currentX);
+        hintImage.setLayoutY(currentY);
+
+        hints.getChildren().add(hintImage);
+        hints.toFront();
+
+    }
+
+    private String getHint() {
+        if (challengeString.equals("")) { // no selected challenge
+            return ""; // no hint
+        }
+        String hintPlacement = "";
+        int hintX = 0;
+        int hintY = 0;
+        while (hintPlacement.equals("")) {
+            Set<String> hints = FocusGame.getViablePiecePlacements(currentPlacement, challengeString, hintX, hintY );
+            if (hints != null && !hints.isEmpty()){
+                hintPlacement = (String)(hints.toArray()[0]);
+            } else {
+                hintX++;
+                if (hintX == 9) {
+                    hintX = 0;
+                    hintY++;
+                }
+                if (hintY == 5) {
+                    return ""; // no possible hint
+                }
+            }
+        }
+        return hintPlacement;
     }
 
     /**
      * hide the hint
      */
     private void hideHint() {
+        hints.getChildren().clear();
     }
 
     public static void main(String[] args) {
