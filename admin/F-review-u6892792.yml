@@ -1,0 +1,26 @@
+# Write your name and UID here.
+#
+reviewer:
+    name: Zeming Wang
+    uid: u6892792
+
+# Write the name of the author of the code here.
+#
+author:
+  name: Ziyue Wang
+  uid: u6969758
+
+# Write the class or method being reviewed here.
+#
+component: FocusGame.isPlacementStringValid(), TileType
+
+# Write a list of review comments here.
+#
+comments:
+  - The TileType class use a three dimentional array to store all kind of tiles' origin state
+  - and a rotate function, which can make it easy to calculate which exact cells are occupied.
+  - Methods and variables are properly named and the program decomposition is appropriate.
+  - Comments are good. With these comments I can easily understand what the codes mean.
+
+
+

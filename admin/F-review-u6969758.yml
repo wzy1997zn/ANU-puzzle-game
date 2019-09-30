@@ -1,23 +1,23 @@
 # Write your name and UID here.
 #
 reviewer:
-    name:
-    uid:
+    name: Pinxu Pan
+    uid: u6969758
 
 # Write the name of the author of the code here.
 #
 author:
-  name:
-  uid:
+  name: Zeming Wang
+  uid: u6892792
 
 # Write the class or method being reviewed here.
 #
-component:
+component: write here
 
 # Write a list of review comments here.
 #
 comments:
-  -
+  - write here
 
 
 
