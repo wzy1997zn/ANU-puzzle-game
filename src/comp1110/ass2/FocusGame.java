@@ -1,9 +1,6 @@
 package comp1110.ass2;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -348,7 +345,7 @@ public class FocusGame {
             }
         }
 
-        System.out.println(res);
+        //System.out.println(res);
         if(res.isEmpty())
             return null;
         return res;
@@ -401,16 +398,29 @@ public class FocusGame {
     public static String getSolution(String challenge) {
         // FIXME Task 9: determine the solution to the game, given a particular challenge
         String res = solve(null,challenge);
-        System.out.println(res);
-        return res;
+        TreeSet<String> treeSet = new TreeSet<>();
+        for(int i = 0; i < res.length(); i+=4){
+            treeSet.add(res.substring(i,i+4));
+        }
+        //System.out.println(res);
+        String finalResult = "";
+        for(String str: treeSet){
+            finalResult += str;
+        }
+        System.out.println(finalResult);
+        //System.out.println(treeSet);
+        return finalResult;
     }
 
     // still have bugs, the palcementString is not well-formed
     public static String solve(String placement, String challenge){
         FocusGame testGame = new FocusGame();
         // initiate the board
+        //System.out.println(placement);
         if(placement != null)
-            testGame.addTileToBoard(placement);
+            for(int i = 0; i < placement.length(); i+=4) {
+                testGame.addTileToBoard(placement.substring(i,i+4));
+            }
 
         int row = 0, col = 0;
         boolean flag = true; // whether get final solution
@@ -433,8 +443,19 @@ public class FocusGame {
         }
         if(flag)
             return placement; // if get final solution, return it
-
-        Set<String> hashSet = getViablePiecePlacements(placement, challenge, row, col); // get a set of viable placements
+/**
+        for(int r = 0; r < 5; r++){
+            for(int c = 0; c < 9; c++) {
+                if(testGame.boardStates[r][c] == null)
+                    System.out.print("_");
+                else
+                    System.out.print(testGame.boardStates[r][c]);
+            }
+            System.out.println();
+        }
+        System.out.println("Try to find: " + placement + " " + row + col);
+ */
+        Set<String> hashSet = getViablePiecePlacements(placement, challenge, col, row); // get a set of viable placements
 
         if(hashSet == null) // if not viable placement, return null
             return null;
@@ -442,7 +463,16 @@ public class FocusGame {
         // try each placement
         for(String place: hashSet){
             if(place != null) {
-                String solution = solve(placement+place, challenge);
+                if((place.charAt(0) == 'g' || place.charAt(0) == 'f') && (place.charAt(3) == '2' ||place.charAt(3) == '3'))
+                    continue;
+                String solution = "";
+                if(placement != null){
+                    solution = solve(placement+place, challenge);
+                }
+                else{
+                    solution = solve(place, challenge);
+                }
+                //System.out.println("placement: " + placement + " place: " + place + " solution: " + solution + " hashSet:" + hashSet);
                 if(solution == null)
                     continue;
                 else
