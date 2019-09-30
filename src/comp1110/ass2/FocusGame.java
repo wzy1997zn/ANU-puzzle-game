@@ -403,6 +403,12 @@ public class FocusGame {
             treeSet.add(res.substring(i,i+4));
         }
         //System.out.println(res);
+        //if(treeSet.contains("f801") && treeSet.contains("j703")){
+         //   treeSet.remove("f801");
+         //   treeSet.remove("j703");
+          //  treeSet.add("f711");
+          //  treeSet.add("j701");
+        //}
         String finalResult = "";
         for(String str: treeSet){
             finalResult += str;
