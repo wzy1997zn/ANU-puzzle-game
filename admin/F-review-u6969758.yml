@@ -12,12 +12,15 @@ author:
 
 # Write the class or method being reviewed here.
 #
-component: write here
+component: isTileValid(Tile tile, State[][] boardStates, State[][] challengeBoard, int row, int col)
 
 # Write a list of review comments here.
 #
 comments:
-  - write here
+  - It is a funtion which used to test whether the tile is valid to cover the given position.
+  - It use boolean funtions to check the tile can place on the board or not.
+  - It checks whether the tile entirely on the board, whether the tile overlap others and whether the tile satisfy the challenge respectively.
+  - The funtion is good and no error, there are also some comments refer to the funtion which can help me to understand.
 
 
 
