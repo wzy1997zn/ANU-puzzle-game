@@ -83,6 +83,7 @@ public class Location {
 
     /**
      * judging whether the location is on board
+     * @author Zeming Wang
      * @return location valid or not
      */
     public boolean isValid() {

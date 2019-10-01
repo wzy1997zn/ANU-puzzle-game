@@ -32,6 +32,7 @@ public class FocusGame {
 
     /**
      * Check if that type of tile has been put on the board
+     * @author Zeming Wang
      * @param type
      * @return if the tile has been put on the board
      */
@@ -150,6 +151,8 @@ public class FocusGame {
      * - the third character is in the range 0 .. 4 (row)
      * - the fourth character is in the range 0 .. 3 (orientation)
      *
+     * @author Zeming Wang
+     *
      * @param piecePlacement A string describing a piece placement
      * @return True if the piece placement is well-formed
      */
@@ -166,6 +169,8 @@ public class FocusGame {
      * - it consists of exactly N four-character piece placements (where N = 1 .. 10);
      * - each piece placement is well-formed
      * - no shape appears more than once in the placement
+     *
+     * @author Zeming Wang
      *
      * @param placement A string describing a placement of one or more pieces
      * @return True if the placement is well-formed
@@ -254,6 +259,8 @@ public class FocusGame {
      * For a piece placement to be viable
      * - it must be valid
      * - it must be consistent with the challenge
+     *
+     * @author Zeming Wang
      *
      * @param placement A viable placement string
      * @param challenge The game's challenge is represented as a 9-character string
@@ -351,6 +358,18 @@ public class FocusGame {
         return res;
     }
 
+    /**
+     * Check whether the tile is valid to cover the given position
+     *
+     * @author Zeming Wang
+     *
+     * @param tile the tile you want to test
+     * @param boardStates the board's state(which cells have been occupied and what color are they)
+     * @param challengeBoard the board which stores the challenge
+     * @param row the row of the exact cell
+     * @param col the column of the exact cell
+     * @return a boolean represent whether the tile is valid to cover the exact cell
+     */
     private static boolean isTileValid(Tile tile, State[][] boardStates, State[][] challengeBoard, int row, int col){
         HashMap<Location,State> info = tile.getTileInfoLocation();
         boolean flag = false;
@@ -391,6 +410,8 @@ public class FocusGame {
      * - If a piece exhibits rotational symmetry, only return the lowest
      *   orientation value (0 or 1)
      *
+     * @author Zeming Wang
+     *
      * @param challenge A challenge string.
      * @return A placement string describing a canonical encoding of the solution to
      * the challenge.
@@ -418,7 +439,15 @@ public class FocusGame {
         return finalResult;
     }
 
-    // still have bugs, the palcementString is not well-formed
+    /**
+     * A recursively solved function. Solve the given challenge.
+     *
+     * @author Zeming Wang
+     *
+     * @param placement a string of all tiles on the board
+     * @param challenge a string of the challenge
+     * @return a string of solution
+     */
     public static String solve(String placement, String challenge){
         FocusGame testGame = new FocusGame();
         // initiate the board
