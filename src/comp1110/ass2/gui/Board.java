@@ -516,7 +516,9 @@ public class Board extends Application {
         char tileName = currentPutting.charAt(0);
         int indexCurTile = currentPlacement.indexOf(tileName);
         if (currentPutting.charAt(1) == '-') { // putting a tile back
-            currentPlacement = currentPlacement.substring(0,indexCurTile) + currentPlacement.substring(indexCurTile+4); // delete related string
+            if (!(indexCurTile == -1)) { // current putting tile is on board
+                currentPlacement = currentPlacement.substring(0,indexCurTile) + currentPlacement.substring(indexCurTile+4); // delete related string
+            }
         } else {
             if (indexCurTile != -1) { // update a tile placement
                 currentPlacement = currentPlacement.substring(0,indexCurTile) + currentPlacement.substring(indexCurTile+4); // delete old first
