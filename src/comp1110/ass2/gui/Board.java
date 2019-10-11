@@ -348,7 +348,7 @@ public class Board extends Application {
                     lastRotateTime = curTime;
                     String oldPlacement = this.toString();
                     rotate();
-                    while (!updatePlacement()) {
+                    while (!updatePlacement(this.toString())) {
                         fitToHome();
                     }
                     String newPlacement = this.toString();
@@ -380,7 +380,7 @@ public class Board extends Application {
                 String oldPlacement = this.toString();
                 fitToGrid();
                 updateStates();
-                while (!updatePlacement()) {
+                while (!updatePlacement(this.toString())) {
                     fitToHome();
                 }
                 String newPlacement = this.toString();
@@ -496,21 +496,34 @@ public class Board extends Application {
      * if not, make last place to home position
      * @return
      */
-    private boolean updatePlacement() {
+    private boolean updatePlacement(String currentPutting) {
         // FIXME Task 7: Implement a basic playable Focus Game in JavaFX that only allows pieces to be placed in valid places
 
-        String lastPlacement = currentPlacement;
-        currentPlacement = "";
-        for (Node node: tiles.getChildren()) {
-            DraggableTile tile = (DraggableTile)node;
-            if (tile.placed) {
-                if (isCenterCovered() && isValidCenter(tile.toString(), currentPlacement)) {
-                    currentPlacement += tile;
+//        String lastPlacement = currentPlacement;
+//        currentPlacement = "";
+//        for (Node node: tiles.getChildren()) {
+//            DraggableTile tile = (DraggableTile)node;
+//            if (tile.placed) {
+//                if (isCenterCovered() && isValidCenter(tile.toString(), currentPlacement)) {
+//                    currentPlacement += tile;
+//
+//                    makePlacementWellFormed();
+//                }
+//            }
+//        }
 
-                    makePlacementWellFormed();
-                }
+        String lastPlacement = currentPlacement;
+        char tileName = currentPutting.charAt(0);
+        int indexCurTile = currentPlacement.indexOf(tileName);
+        if (currentPutting.charAt(1) == '-') { // putting a tile back
+            currentPlacement = currentPlacement.substring(0,indexCurTile) + currentPlacement.substring(indexCurTile+4); // delete related string
+        } else {
+            if (indexCurTile != -1) { // update a tile placement
+                currentPlacement = currentPlacement.substring(0,indexCurTile) + currentPlacement.substring(indexCurTile+4); // delete old first
             }
+            currentPlacement += currentPutting;
         }
+
         if (FocusGame.isPlacementStringValid(currentPlacement)) {
             System.out.println("Current placement: " + currentPlacement);
             return true;
