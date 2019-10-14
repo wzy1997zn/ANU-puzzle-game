@@ -12,7 +12,16 @@ public class TileTypeTest {
             {State.G, State.G, State.W, State.R},
             {State.G, null,    null,    null,  }
         };
-
+        State[][] jrotate1 = {//j
+                {State.G, State.G},
+                {null,    State.G},
+                {null,    State.W},
+                {null,    State.R}
+        };
+        State[][] jrotate2 = {//j
+                {null,    null,       null,       State.G},
+                {State.R, State.W,    State.G,    State.G,  }
+        };
         State[][] jrotate3 = {//j
                 {State.R, null   },
                 {State.W, null   },
@@ -21,10 +30,14 @@ public class TileTypeTest {
         };
 
         State[][] test = jori;
-        for (int i = 0; i < 3; i++) {
-            test = TileType.rotate90_2DStateArray(test);
-        }
-        assertArrayEquals("R,0,\nW,0\nG,0\nG,G",jrotate3,test);
+        test = TileType.rotate90_2DStateArray(test);
+        assertArrayEquals("rotate 1 time",jrotate1,test);
+        test = TileType.rotate90_2DStateArray(test);
+        assertArrayEquals("rotate 2 time",jrotate2,test);
+        test = TileType.rotate90_2DStateArray(test);
+        assertArrayEquals("rotate 3 time",jrotate3,test);
+        test = TileType.rotate90_2DStateArray(test);
+        assertArrayEquals("rotate 4 time",jori,test);
 
     }
 }
