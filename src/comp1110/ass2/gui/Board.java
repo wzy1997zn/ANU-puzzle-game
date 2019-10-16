@@ -1,6 +1,6 @@
 package comp1110.ass2.gui;
 
-import comp1110.ass2.FocusGame;
+import comp1110.ass2.*;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
-import java.util.Set;
+import java.util.*;
 
 /**
  * the visible edition of focus game
@@ -66,6 +66,11 @@ public class Board extends Application {
     private String challengeString = "";
     private String[] challengeSets = {"RRRBWBBRB","RWWRRRWWW"};
 
+    private final Group difficulties = new Group();
+    private final String[] difficultySets = {"easy", "medium", "hard"};
+
+    private final boolean USE_DIFFICULTY = true;
+
     //a list storing whether tile is used, can also get the state by tiles.getChildren().get(i).placed
     private boolean[] tilePlaced = new boolean[10];
     // main game
@@ -73,10 +78,28 @@ public class Board extends Application {
     // a string storing current placement on board
     public String currentPlacement = "";
 
+    private DraggableTile[] draggableTiles = new DraggableTile[10]; // more easy way to access to the tiles
+
 
 
     // FIXME Task 8: Implement choices (you may use choices and assets provided for you in comp1110.ass2.gui.assets: sq-b.png, sq-g.png, sq-r.png & sq-w.png)
 
+
+    //The issue that places in the gitlab provide a way to get the challenge->TestUtillity, so we just need to copy the code in the TestUtillity and rename it as ChallengeUtility
+    //This way uses the given SolutionSet to initialize the challengeSet.
+    private void initChallenges() {
+        List<String> challengeStrings = new ArrayList<>();
+        for (Solution solution: ChallengeUtility.SOLUTIONS) {
+            challengeStrings.add(solution.objective);
+        }
+        challengeSets = new String[challengeStrings.size()];
+        challengeSets = challengeStrings.toArray(challengeSets);
+        challengeSets = new String[ChallengeUtility.SOLUTIONS.length];
+        for (int i = 0; i < ChallengeUtility.SOLUTIONS.length;i++
+        ) {
+            challengeSets[i] = ChallengeUtility.SOLUTIONS[i].objective;
+        }
+    }
 
     // FIXME Task 11: Generate interesting choices (each challenge may have just one solution)
 
@@ -89,19 +112,31 @@ public class Board extends Application {
         root.getChildren().add(board);
         root.getChildren().add(hints);
 
-        // F
-        root.getChildren().addAll(choices,challenges);
-        makeChallengeBox();
+        if (USE_DIFFICULTY) { // Using the global variable to choose difficulties or levels
+            root.getChildren().addAll(difficulties, challenges); // It similar to the function of challenge
+            makeDifficultBox();
+        } else {
+            // F
+            initChallenges(); // Initializing the array of challenge
+            root.getChildren().addAll(choices,challenges); //Adding the component group that related to the challenge to GUI
+            makeChallengeBox(); //Initializing the related component group
+        }
 
         makeBoard();
-        makeTiles();
-        newGame();
+        initBoardStates(); //Integrate the code for initializing the board state into one
 
         addKeyHandler(scene);
 
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+    private void initBoardStates() {
+        makeTiles();
+        newGame();
+        currentPlacement = "";
+    }
+
 
     private void addKeyHandler(Scene scene) {
         scene.setOnKeyPressed(keyEvent -> {
@@ -127,9 +162,15 @@ public class Board extends Application {
     }
 
     // F
-    private void makeChallenges(ChoiceBox<String> choices) {
+    // Separating the method of setting challengeString and makeChallenge, them we can reuse the code of makeChallenge.
+    private void setChallengeString(ChoiceBox<String> choices) {
         String choice = choices.getValue();
-        challengeString = challengeSets[choice.charAt(choice.length()-1) - '0' - 1];
+//        challengeString = challengeSets[choice.charAt(choice.length()-1) - '0' - 1];
+        challengeString = challengeSets[Integer.parseInt(choice.split(" ")[1])];
+    }
+
+    private void makeChallenges() {
+
         challenges.getChildren().clear();
         for (int i = 0; i < challengeString.length(); i++) {
             ImageView square = new ImageView(new Image(Board.class.getResource(
@@ -143,11 +184,88 @@ public class Board extends Application {
             int Y = ZERO_Y + SQUARE_SIZE + (i/3)*SQUARE_SIZE;
             square.setX(X);
             square.setY(Y);
+            square.setOpacity(0.6); // Changing the transparency of the scene
             challenges.getChildren().add(square);
 //            currentY = gridY * SQUARE_SIZE + ZERO_Y;
+        }
+        challenges.toFront(); // It used to ensure that the movable tiles are on the upper level of the challenges
+        tiles.toFront(); // Otherwise, it will cause the challenges to be overlaid on the tiles and we can't control the tiles
+    }
 
+    private void makeDifficulty(ChoiceBox<String> choices) { // Firstly, setting up the challengestring Secondly, draw the challenge
+        String diffChoice = choices.getValue();
+
+        // easy——releasing 7 pieces medium--releasing 4 pieces hard--releasing 0 pieces
+
+        int[] preSetNums = {7,4,0};
+        int index = -1;
+        if (diffChoice.equals("easy")){
+            index = 0;
+        } else if (diffChoice.equals("medium")) {
+            index = 1;
+        } else if (diffChoice.equals("hard")) {
+            index = 2;
+        }
+        int preSetNum = preSetNums[index];
+
+
+        Random r = new Random();
+
+        int challengeIndex = r.nextInt(ChallengeUtility.SOLUTIONS.length);
+
+        // 1. Setting up the challengestring 2. Drawing the challenge We randomly set the target, then we can use the previous method that we have written
+        challengeString = ChallengeUtility.SOLUTIONS[challengeIndex].objective;
+        makeChallenges();
+
+        // Randomly generate a list of tiles to be placed according to the number of placements of different difficulty levels
+        // Randomly choose n element from the list
+        String solutionString = ChallengeUtility.SOLUTIONS[challengeIndex].placement;
+        List<String> solutionTiles = new LinkedList<>();
+        for (int i = 0; i < 10; i++) {
+            solutionTiles.add(solutionString.substring(i*4,(i+1)*4));
+        }
+        List<String> preSetTiles = new ArrayList<>();
+        for (int i = 0; i < preSetNum; i++) {
+            int preSetIndex = r.nextInt(solutionTiles.size());
+            String preSetTile = solutionTiles.remove(preSetIndex);
+            preSetTiles.add(preSetTile);
+        }
+
+        // Placing tiles by list
+        preSetTileOnBoard(preSetTiles);
+
+    }
+
+    private void preSetTileOnBoard(List<String> preSetTiles) { // Preset pieces
+        initBoardStates(); // If we don't initialize, the remaining tile on the top will keep decreasing, until blank
+
+        for (String tileString:
+                preSetTiles) {
+            int tileIndex = tileString.charAt(0) - 'a';
+            int gridX = tileString.charAt(1) - '0';
+            int gridY = tileString.charAt(2) - '0';
+            int rotateTime = tileString.charAt(3) - '0';
+            DraggableTile curTile = draggableTiles[tileIndex];
+
+            // 预置过程
+            curTile.currentX = gridX * SQUARE_SIZE + ZERO_X;
+            curTile.currentY = gridY * SQUARE_SIZE + ZERO_Y;
+            curTile.setLayoutX(curTile.currentX);
+            curTile.setLayoutY(curTile.currentY); // Set up xy
+
+            curTile.orientation = 0; // Initializing
+            for (int i = 0; i < rotateTime; i++) {
+                curTile.rotate();
+            }
+
+            // Change the state of board
+            currentPlacement += tileString;
+            focusGame.addTileToBoard(tileString);
 
         }
+        // Check for correctness
+        System.out.println("Current placement: " + currentPlacement);
+        focusGame.outputStates();
     }
 
     private boolean isValidCenter(String piecePlacement, String placement) {
@@ -166,26 +284,56 @@ public class Board extends Application {
         ChoiceBox<String> choices = new ChoiceBox<>();
         choices.setLayoutX(BUTTON_X);
         choices.setLayoutY(BUTTON_Y-50);
-        choices.getItems().addAll("Challenge 1", "Challenge 2");
-        this.choices.getChildren().add(choices);
+        String[] challengeChoiceStrings = new String[challengeSets.length];
+        for (int i = 0; i < challengeChoiceStrings.length; i++) {
+            challengeChoiceStrings[i] = "Challenge " + i;
+        }
+        choices.getItems().addAll(challengeChoiceStrings);
+        this.choices.getChildren().addAll(choices);
         System.out.println(choices.getValue());
 
 
         Button changeLevel = new Button("Start");
         changeLevel.setLayoutX(BUTTON_X);
         changeLevel.setLayoutY(BUTTON_Y);
-        changeLevel.setOnAction(e -> makeChallenges(choices));
+        changeLevel.setOnAction(e -> {
+            setChallengeString(choices);
+            makeChallenges();
+
+        });
         this.choices.getChildren().add(changeLevel);
 
     }
+
+
+    private void makeDifficultBox() { // Set up the button
+        ChoiceBox<String> choices = new ChoiceBox<>();
+        choices.setLayoutX(BUTTON_X);
+        choices.setLayoutY(BUTTON_Y-50);
+        choices.getItems().addAll(difficultySets);
+        this.difficulties.getChildren().addAll(choices);
+
+        Button changeDiff = new Button("Start");
+        changeDiff.setLayoutX(BUTTON_X);
+        changeDiff.setLayoutY(BUTTON_Y);
+        changeDiff.setOnAction(e -> {
+            makeDifficulty(choices);
+        });
+        this.difficulties.getChildren().add(changeDiff);
+    }
+
+
 
     /**
      * generate draggable imgs of tiles
      */
     public void makeTiles() {
         tiles.getChildren().clear();
+        draggableTiles = new DraggableTile[10];
         for (char i = 'a'; i <= 'j'; i++) {
-            tiles.getChildren().add(new DraggableTile(i));
+            DraggableTile tile = new DraggableTile(i);
+            tiles.getChildren().add(tile);
+            draggableTiles[i - 'a'] = tile;
         }
     }
 
@@ -348,7 +496,7 @@ public class Board extends Application {
                     lastRotateTime = curTime;
                     String oldPlacement = this.toString();
                     rotate();
-                    while (!updatePlacement()) {
+                    while (!updatePlacement(this.toString())) {
                         fitToHome();
                     }
                     String newPlacement = this.toString();
@@ -380,7 +528,7 @@ public class Board extends Application {
                 String oldPlacement = this.toString();
                 fitToGrid();
                 updateStates();
-                while (!updatePlacement()) {
+                while (!updatePlacement(this.toString())) {
                     fitToHome();
                 }
                 String newPlacement = this.toString();
@@ -496,22 +644,58 @@ public class Board extends Application {
      * if not, make last place to home position
      * @return
      */
-    private boolean updatePlacement() {
+    private boolean updatePlacement(String currentPutting) {
         // FIXME Task 7: Implement a basic playable Focus Game in JavaFX that only allows pieces to be placed in valid places
 
-        String lastPlacement = currentPlacement;
-        currentPlacement = "";
-        for (Node node: tiles.getChildren()) {
-            DraggableTile tile = (DraggableTile)node;
-            if (tile.placed) {
-                if (isCenterCovered() && isValidCenter(tile.toString(), currentPlacement)) {
-                    currentPlacement += tile;
+//        String lastPlacement = currentPlacement;
+//        currentPlacement = "";
+//        for (Node node: tiles.getChildren()) {
+//            DraggableTile tile = (DraggableTile)node;
+//            if (tile.placed) {
+//                if (isCenterCovered() && isValidCenter(tile.toString(), currentPlacement)) {
+//                    currentPlacement += tile;
+//
+//                    makePlacementWellFormed();
+//                }
+//            }
+//        }
 
-                    makePlacementWellFormed();
+        String lastPlacement = currentPlacement;
+        char tileName = currentPutting.charAt(0);
+        int indexCurTile = currentPlacement.indexOf(tileName);
+        if (currentPutting.charAt(1) == '-') { // putting a tile back
+            if (!(indexCurTile == -1)) { // current putting tile is on board
+                currentPlacement = currentPlacement.substring(0,indexCurTile) + currentPlacement.substring(indexCurTile+4); // delete related string
+            }
+        } else {
+            if (indexCurTile != -1) { // update a tile placement
+                currentPlacement = currentPlacement.substring(0,indexCurTile) + currentPlacement.substring(indexCurTile+4); // delete old first
+            }
+            // For task8, it need to check whether the addition or change meets the requirement of challenge. If it is not satisfied, the placement cannot be updated, and the tile is returned to the initial point.
+            // It can use the function getViablePiecePlacements() in the FocusGame
+            if (!challengeString.equals("")) {
+                int col = 0;
+                int row = 0;
+                for (Map.Entry<Location, State> info: new Tile(currentPutting).getTileInfoLocation().entrySet()) {
+                    Location loc = info.getKey();
+                    State state = info.getValue();
+                    if (state != null) {
+                        col = loc.getY();
+                        row = loc.getX();
+                    }
+                }
+
+                Set<String> viablePuttingSet = FocusGame.getViablePiecePlacements(currentPlacement, challengeString, col, row);
+                if (viablePuttingSet == null || !viablePuttingSet.contains(currentPutting)) { // If the viable is empty, it means this put is not satisfy the requirement, then return false
+                    currentPlacement = lastPlacement; // If this put is not satisfy the requirement, the current placement will not change
+                    return false;
                 }
             }
+
+            currentPlacement += currentPutting; // adding a tile
         }
-        if (FocusGame.isPlacementStringValid(currentPlacement)) {
+
+        if (FocusGame.isPlacementStringValid(currentPlacement)) { // valid placement
             System.out.println("Current placement: " + currentPlacement);
             return true;
         } else {
@@ -524,13 +708,6 @@ public class Board extends Application {
         }
     }
 
-    //F
-    // make the currentPlacement well formed
-    private void makePlacementWellFormed() {
 
     }
 
-    private boolean isCenterCovered() {
-        return true; // not done yet but let other method work updated by Ziyue Wang
-    }
-}
