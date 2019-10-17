@@ -113,15 +113,15 @@ public class Board extends Application {
         root.getChildren().add(board);
         root.getChildren().add(hints);
 
-        if (USE_DIFFICULTY) { // Using the global variable to choose difficulties or levels
-            root.getChildren().addAll(difficulties, challenges); // It similar to the function of challenge
-            makeDifficultBox();
-        } else {
+//        if (USE_DIFFICULTY) { // Using the global variable to choose difficulties or levels
+        root.getChildren().addAll(difficulties, challenges); // It similar to the function of challenge
+        makeDifficultBox();
+//        } else {
             // F
-            initChallenges(); // Initializing the array of challenge
-            root.getChildren().addAll(choices,challenges); //Adding the component group that related to the challenge to GUI
-            makeChallengeBox(); //Initializing the related component group
-        }
+        initChallenges(); // Initializing the array of challenge
+        root.getChildren().addAll(choices); //Adding the component group that related to the challenge to GUI
+        makeChallengeBox(); //Initializing the related component group
+//        }
 
         makeBoard();
         initBoardStates(); //Integrate the code for initializing the board state into one
@@ -173,6 +173,8 @@ public class Board extends Application {
     private void makeChallenges() {
 
         challenges.getChildren().clear();
+        initBoardStates();
+
         for (int i = 0; i < challengeString.length(); i++) {
             ImageView square = new ImageView(new Image(Board.class.getResource(
                     URI_BASE + "sq-" + Character.toLowerCase(challengeString.charAt(i)) + ".png").toString()));
@@ -294,7 +296,7 @@ public class Board extends Application {
         System.out.println(choices.getValue());
 
 
-        Button changeLevel = new Button("Start");
+        Button changeLevel = new Button("ChallengeStart");
         changeLevel.setLayoutX(BUTTON_X);
         changeLevel.setLayoutY(BUTTON_Y);
         changeLevel.setOnAction(e -> {
@@ -310,13 +312,13 @@ public class Board extends Application {
     private void makeDifficultBox() { // Set up the button
         ChoiceBox<String> choices = new ChoiceBox<>();
         choices.setLayoutX(BUTTON_X);
-        choices.setLayoutY(BUTTON_Y-50);
+        choices.setLayoutY(BUTTON_Y-50 + 100);
         choices.getItems().addAll(difficultySets);
         this.difficulties.getChildren().addAll(choices);
 
-        Button changeDiff = new Button("Start");
+        Button changeDiff = new Button("DifficultyStart");
         changeDiff.setLayoutX(BUTTON_X);
-        changeDiff.setLayoutY(BUTTON_Y);
+        changeDiff.setLayoutY(BUTTON_Y + 100);
         changeDiff.setOnAction(e -> {
             makeDifficulty(choices);
         });
