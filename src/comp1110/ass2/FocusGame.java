@@ -1,7 +1,6 @@
 package comp1110.ass2;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * This class provides the text interface for the IQ Focus Game
@@ -42,6 +41,7 @@ public class FocusGame {
 
     /**
      * Modified by Ziyue Wang, need to use tileUsed, so remove static
+     * @author Zeming Wang
      * check if a tile has been put on the board
      * @param tile the tile you want to check
      * @return if the tile has been put on the board
