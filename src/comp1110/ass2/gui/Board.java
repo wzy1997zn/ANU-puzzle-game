@@ -3,13 +3,13 @@ package comp1110.ass2.gui;
 import comp1110.ass2.*;
 import javafx.application.Application;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -67,11 +67,9 @@ public class Board extends Application {
     private String[] challengeSets = {"RRRBWBBRB","RWWRRRWWW"};
 
     private final Group difficulties = new Group();
-    private final String[] difficultySets = {"starter", "junior", "expert", "master", "wizard"};
+    private final String[] difficultySets = {"easy", "medium", "hard"};
 
     private final boolean USE_DIFFICULTY = true;
-
-    private final Group help = new Group();
 
     //a list storing whether tile is used, can also get the state by tiles.getChildren().get(i).placed
     private boolean[] tilePlaced = new boolean[10];
@@ -88,7 +86,6 @@ public class Board extends Application {
 
 
     //The issue that places in the gitlab provide a way to get the challenge->TestUtillity, so we just need to copy the code in the TestUtillity and rename it as ChallengeUtility
-    // Since teacher updated Solution, we turn to use Solution.
     //This way uses the given SolutionSet to initialize the challengeSet.
     private void initChallenges() {
         List<String> challengeStrings = new ArrayList<>();
@@ -114,19 +111,16 @@ public class Board extends Application {
         root.getChildren().add(tiles);
         root.getChildren().add(board);
         root.getChildren().add(hints);
-        root.getChildren().add(help);
 
-        makeHelp();
-
-//        if (USE_DIFFICULTY) { // Using the global variable to choose difficulties or levels
-        root.getChildren().addAll(difficulties, challenges); // It similar to the function of challenge
-        makeDifficultBox();
-//        } else {
+        if (USE_DIFFICULTY) { // Using the global variable to choose difficulties or levels
+            root.getChildren().addAll(difficulties, challenges); // It similar to the function of challenge
+            makeDifficultBox();
+        } else {
             // F
-        initChallenges(); // Initializing the array of challenge
-        root.getChildren().addAll(choices); //Adding the component group that related to the challenge to GUI
-        makeChallengeBox(); //Initializing the related component group
-//        }
+            initChallenges(); // Initializing the array of challenge
+            root.getChildren().addAll(choices,challenges); //Adding the component group that related to the challenge to GUI
+            makeChallengeBox(); //Initializing the related component group
+        }
 
         makeBoard();
         initBoardStates(); //Integrate the code for initializing the board state into one
@@ -135,13 +129,6 @@ public class Board extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    private void makeHelp() {
-        Text helpTest = new Text("Drag and drop the pieces onto the board,\nRoll the mouse wheel to rotate the pieces.\nHave fun!");
-        helpTest.setLayoutX(BUTTON_X);
-        helpTest.setLayoutY(BUTTON_Y + 200);
-        help.getChildren().add(helpTest);
     }
 
     private void initBoardStates() {
@@ -185,8 +172,6 @@ public class Board extends Application {
     private void makeChallenges() {
 
         challenges.getChildren().clear();
-        initBoardStates();
-
         for (int i = 0; i < challengeString.length(); i++) {
             ImageView square = new ImageView(new Image(Board.class.getResource(
                     URI_BASE + "sq-" + Character.toLowerCase(challengeString.charAt(i)) + ".png").toString()));
@@ -212,33 +197,29 @@ public class Board extends Application {
 
         // easy——releasing 7 pieces medium--releasing 4 pieces hard--releasing 0 pieces
 
-        int[] preSetNums = {4,3,2,1,0};
+        int[] preSetNums = {7,4,0};
         int index = -1;
-        if (diffChoice.equals("starter")){
+        if (diffChoice.equals("easy")){
             index = 0;
-        } else if (diffChoice.equals("junior")) {
+        } else if (diffChoice.equals("medium")) {
             index = 1;
-        } else if (diffChoice.equals("expert")) {
+        } else if (diffChoice.equals("hard")) {
             index = 2;
-        } else if (diffChoice.equals("master")) {
-            index = 3;
-        } else if (diffChoice.equals("wizard")) {
-            index = 4;
         }
         int preSetNum = preSetNums[index];
 
 
         Random r = new Random();
 
-        int challengeIndex = r.nextInt(Solution.SOLUTIONS.length);
+        int challengeIndex = r.nextInt(ChallengeUtility.SOLUTIONS.length);
 
         // 1. Setting up the challengestring 2. Drawing the challenge We randomly set the target, then we can use the previous method that we have written
-        challengeString = Solution.SOLUTIONS[challengeIndex].objective;
+        challengeString = ChallengeUtility.SOLUTIONS[challengeIndex].objective;
         makeChallenges();
 
         // Randomly generate a list of tiles to be placed according to the number of placements of different difficulty levels
         // Randomly choose n element from the list
-        String solutionString = FocusGame.getSolution(challengeString);
+        String solutionString = ChallengeUtility.SOLUTIONS[challengeIndex].placement;
         List<String> solutionTiles = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
             solutionTiles.add(solutionString.substring(i*4,(i+1)*4));
@@ -312,7 +293,7 @@ public class Board extends Application {
         System.out.println(choices.getValue());
 
 
-        Button changeLevel = new Button("ChallengeStart");
+        Button changeLevel = new Button("Start");
         changeLevel.setLayoutX(BUTTON_X);
         changeLevel.setLayoutY(BUTTON_Y);
         changeLevel.setOnAction(e -> {
@@ -328,13 +309,13 @@ public class Board extends Application {
     private void makeDifficultBox() { // Set up the button
         ChoiceBox<String> choices = new ChoiceBox<>();
         choices.setLayoutX(BUTTON_X);
-        choices.setLayoutY(BUTTON_Y-50 + 100);
+        choices.setLayoutY(BUTTON_Y-50);
         choices.getItems().addAll(difficultySets);
         this.difficulties.getChildren().addAll(choices);
 
-        Button changeDiff = new Button("DifficultyStart");
+        Button changeDiff = new Button("Start");
         changeDiff.setLayoutX(BUTTON_X);
-        changeDiff.setLayoutY(BUTTON_Y + 100);
+        changeDiff.setLayoutY(BUTTON_Y);
         changeDiff.setOnAction(e -> {
             makeDifficulty(choices);
         });
