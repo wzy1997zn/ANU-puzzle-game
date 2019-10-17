@@ -3,13 +3,13 @@ package comp1110.ass2.gui;
 import comp1110.ass2.*;
 import javafx.application.Application;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -71,6 +71,8 @@ public class Board extends Application {
 
     private final boolean USE_DIFFICULTY = true;
 
+    private final Group help = new Group();
+
     //a list storing whether tile is used, can also get the state by tiles.getChildren().get(i).placed
     private boolean[] tilePlaced = new boolean[10];
     // main game
@@ -112,6 +114,9 @@ public class Board extends Application {
         root.getChildren().add(tiles);
         root.getChildren().add(board);
         root.getChildren().add(hints);
+        root.getChildren().add(help);
+
+        makeHelp();
 
 //        if (USE_DIFFICULTY) { // Using the global variable to choose difficulties or levels
         root.getChildren().addAll(difficulties, challenges); // It similar to the function of challenge
@@ -130,6 +135,13 @@ public class Board extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void makeHelp() {
+        Text helpTest = new Text("Drag and drop the pieces onto the board,\nRoll the mouse wheel to rotate the pieces.\nHave fun!");
+        helpTest.setLayoutX(BUTTON_X);
+        helpTest.setLayoutY(BUTTON_Y + 200);
+        help.getChildren().add(helpTest);
     }
 
     private void initBoardStates() {
