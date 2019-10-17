@@ -86,6 +86,7 @@ public class Board extends Application {
 
 
     //The issue that places in the gitlab provide a way to get the challenge->TestUtillity, so we just need to copy the code in the TestUtillity and rename it as ChallengeUtility
+    // Since teacher updated Solution, we turn to use Solution.
     //This way uses the given SolutionSet to initialize the challengeSet.
     private void initChallenges() {
         List<String> challengeStrings = new ArrayList<>();
@@ -211,15 +212,15 @@ public class Board extends Application {
 
         Random r = new Random();
 
-        int challengeIndex = r.nextInt(ChallengeUtility.SOLUTIONS.length);
+        int challengeIndex = r.nextInt(Solution.SOLUTIONS.length);
 
         // 1. Setting up the challengestring 2. Drawing the challenge We randomly set the target, then we can use the previous method that we have written
-        challengeString = ChallengeUtility.SOLUTIONS[challengeIndex].objective;
+        challengeString = Solution.SOLUTIONS[challengeIndex].objective;
         makeChallenges();
 
         // Randomly generate a list of tiles to be placed according to the number of placements of different difficulty levels
         // Randomly choose n element from the list
-        String solutionString = ChallengeUtility.SOLUTIONS[challengeIndex].placement;
+        String solutionString = FocusGame.getSolution(challengeString);
         List<String> solutionTiles = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
             solutionTiles.add(solutionString.substring(i*4,(i+1)*4));
