@@ -67,7 +67,7 @@ public class Board extends Application {
     private String[] challengeSets = {"RRRBWBBRB","RWWRRRWWW"};
 
     private final Group difficulties = new Group();
-    private final String[] difficultySets = {"easy", "medium", "hard"};
+    private final String[] difficultySets = {"starter", "junior", "expert", "master", "wizard"};
 
     private final boolean USE_DIFFICULTY = true;
 
@@ -200,14 +200,18 @@ public class Board extends Application {
 
         // easy——releasing 7 pieces medium--releasing 4 pieces hard--releasing 0 pieces
 
-        int[] preSetNums = {7,4,0};
+        int[] preSetNums = {4,3,2,1,0};
         int index = -1;
-        if (diffChoice.equals("easy")){
+        if (diffChoice.equals("starter")){
             index = 0;
-        } else if (diffChoice.equals("medium")) {
+        } else if (diffChoice.equals("junior")) {
             index = 1;
-        } else if (diffChoice.equals("hard")) {
+        } else if (diffChoice.equals("expert")) {
             index = 2;
+        } else if (diffChoice.equals("master")) {
+            index = 3;
+        } else if (diffChoice.equals("wizard")) {
+            index = 4;
         }
         int preSetNum = preSetNums[index];
 
